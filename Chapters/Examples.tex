@@ -60,7 +60,7 @@ In the following sections, three example problems are demonstrated using the pro
     \caption{Drone Free Body Diagram}
     \label{fig:drone}
 \end{figure}
-\noindent We can model this system as 3 separate bodies with the following properties.
+\noindent This system can be modelled as 3 separate bodies with the following properties.
 \begin{align*}
     \begin{split}
         {^I_I \r _0} &= \begin{bmatrix} x & 0 & 0\end{bmatrix} \\
@@ -86,7 +86,7 @@ In the following sections, three example problems are demonstrated using the pro
     \caption{Drone OKC Model}
     \label{fig:drone}
 \end{figure}
-\noindent The force of the propellers $\left [ u_1 \quad u_2 \right ]$ is projected into the joint space with the following input matrix
+\noindent The force of the propellers, $\left [ u_1 \quad u_2 \right ]$ is projected into the joint space with the following input matrix
 \begin{align*}
     \P(x, y, \theta) = \begin{bmatrix}
     -r\sin{\theta} & -r\sin{\theta} \\ 
@@ -94,14 +94,15 @@ In the following sections, three example problems are demonstrated using the pro
     1 & -1 
     \end{bmatrix}
 \end{align*}
-\noindent We begin by deriving a reference controller that achieves a desired lateral and vertical position. This is broken into two separate controllers, positioning in each direction. 
+\noindent The system is equipped with a reference controller that achieves a desired lateral and vertical position. This is broken into two separate controllers, positioning in each direction. 
 \begin{align}
+    \left [ u_1 \quad u_2 \right ] &= \left [u_{\text{vert}_1} + u_{\text{lat}_1} \quad u_{\text{vert}_2} + u_{\text{lat}_2}\right ] \\
     u_{\text{vert}_1} = u_{\text{vert}_2} &= \frac{g}{2 \cos{\theta}} + P_{\text{vert}} \left (y_{\text{goal}} -  y\right) - D_{\text{vert}}\dot{y} \\
     u_{\text{lat}_2} = -u_{\text{lat}_1} &= P_{\text{lat}_1}\arctan{\left ((1 - D_{\text{lat}_1})\dot{x} - (x_{\text{goal}} - x) \right )} -  P_{\text{lat}_2}\theta - D_{\text{lat}_2}\dot{\theta}
 \end{align}
 \subsection{Reference Controller Performance}
 
-\noindent We set the following control parameters:
+\noindent The system shall has been assigned the following control parameters:
 \begin{align*}
 \begin{split}
     P_{\text{vert}} &= 1 \\
@@ -119,7 +120,7 @@ In the following sections, three example problems are demonstrated using the pro
 \end{split}
 \end{align*}
 
-\noindent Figure \ref{fig:dronepd} shows the path the drone takes using this controller, starting from $(x, y, \theta) = (0, 0, 0)$ to reach $(5, 5, 0)$.
+\noindent Figure \ref{fig:dronepd} shows the trajectory the system takes using this references controller, starting from $(x, y, \theta) = (0, 0, 0)$ to reach $(5, 5, 0)$.
 
 \begin{figure}[H]
     \centering
@@ -128,7 +129,7 @@ In the following sections, three example problems are demonstrated using the pro
     \label{fig:dronepd}
 \end{figure}
 
-\noindent While the drone does not significantly overshoot the target position, there is overshoot on the intermediate path. However, we will see that with a CBF implemented we can avoid obstacles even with this overshoot. On the test system, this controller ran at an average 276.97Hz.
+\noindent While the drone does not significantly overshoot the target position, there is overshoot on the intermediate path. However, with a CBF implemented the system can avoid obstacles even with this overshoot. 
 
 \subsection{Collision Avoidance}
 
@@ -138,14 +139,15 @@ In the following sections, three example problems are demonstrated using the pro
         \text{Roof}(x) = \sin{x} + 1
     \end{split}
     \begin{split}
-        \text{Floor}(x) = \sin{x} + 1
+        \text{Floor}(x) = \sin{x} - 1
     \end{split}
 \end{align}
-\noindent We wish to enforce a safety buffer of 0.5 meters between the drone and boundaries of the cave. With this, we have the following barrier function
+\noindent The CBF shall enforce a safety buffer of 0.5 meters between the position of drone and boundaries of the cave. The following barrier function describes such a requirement
 \begin{align}
     h(x, y, \theta) = (\text{Roof}(x) - y + 0.5)(y - 0.5 - \text{Floor}(x))
 \end{align}
-\noindent Before enforcing the barrier, we will first try a best effort approach. For this, we will use the existing reference controller, with a target height of $y = \sin{x}.$ Figure \ref{fig:DronePathNoCBF} shows a simulation of this best effort controller. 
+ 
+ Before enforcing the barrier, a best effort approach will be shown. Only the reference controller will be utilized with a target height of $y = \sin{x}$, corresponding  to the center of the cave. Figure \ref{fig:DronePathNoCBF} shows a simulation of this best effort controller. 
 
 \begin{figure}[H]
     \centering
@@ -157,7 +159,7 @@ In the following sections, three example problems are demonstrated using the pro
 
 \noindent Despite the target path being well within the safe set, the set is breached at several point in the simulation. Not just this, but the wall of the cave is breached as well. \newline
 
-\noindent We now run the simulation again, this time enabling our control barrier function, in addition to our reference controller. The results of this simulation are shown in Figure \ref{fig:DronePathCBF}.
+The simulation is now run again, this time enabling the control barrier function, in addition to the reference controller. The results of this simulation are shown in Figure \ref{fig:DronePathCBF}.
 
 \begin{figure}[H]
     \centering
@@ -166,13 +168,16 @@ In the following sections, three example problems are demonstrated using the pro
     \caption{Drone: CBF}
     \label{fig:DronePathCBF}
 \end{figure}
-\section{7 DOF Manipulator}  \label{sec:7dof}
 
-\noindent In this example we explore the the following 7DOF arm maniulator.
+\noindent Unlike the previous example, with a best effort collision avoidance system, the CBF controller can successfully maintain a 0.5m safety margin between the floor and ceiling of the cave. On the test system, this controller ran at an average 276.97Hz.
+
+\section{Seven DOF Manipulator}  \label{sec:7dof}
+
+\noindent This example demonstrates a seven degree-of-freedom arm manipulator.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Figures/Examples/7DOF Zeroed.png}
+    \includegraphics[width=\textwidth]{Figures/Examples/Zeroed.png}
     \caption{7 DOF Zeroed}
     \label{fig:7dofzero}
 \end{figure}
@@ -209,7 +214,7 @@ In the following sections, three example problems are demonstrated using the pro
     \end{split}
 \end{align*}
 
-\noindent High DOF, coupled systems such as this are prime candidates for numerical acceleration as their symbolic equations grow exponentially with link count. When using MATLAB's symbolic math toolbox to compute the equations of motion for this manipulator, the resulting output script for $(\H, \F, \d)$ is nearly 4 thousand lines long, and takes 0.144657 seconds to execute, or 6.91Hz. This does not including computing the derivatives necessary for a CBF controller. It is estimated that the symbolic equations for the derivative terms will add an additional 0.34 seconds of computation time, leading to an overall execution frequency of $2.1$ Hz. Using our numerical methods, we can run a controller at speeds exceeding 90Hz on the same system. \newline
+\noindent High DOF coupled systems such as this are prime candidates for numerical acceleration as their symbolic equations grow exponentially with link count. When using MATLAB's symbolic math toolbox to compute the equations of motion for this manipulator, the resulting output script for $(\H, \F, \d)$ is nearly 4 thousand lines long, and takes 0.144657 seconds to execute, or 6.91Hz. This does not including computing the derivatives necessary for a CBF controller, which increases the execution time to \textbf{TODO: FIND THIS VALUE}. Using numerical methods, a CBF controller can execute at a frequency exceeding 90Hz on the same system. \newline
 
 \noindent For the following simulations, we use the following mass properties.
 
