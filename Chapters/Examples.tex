@@ -8,28 +8,19 @@ In the following sections, three example problems are demonstrated using the pro
 \noindent A commonly cited use case for control barrier functions is platooning. In this application, a set of vehicles traveling along a road which to reach a desired speed while maintaining adequate stopping distance. 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Figures/Platoon/Platoon.png}
+    \includegraphics[width=\textwidth]{Figures/Examples/Platoon/Platoon.png}
     \caption{Platooning Busses}
     \label{fig:platoon_diag}
 \end{figure}
-\noindent In our existing framework, we can model such a system as a series of prismatic joints all attached to one common root. In this case, the root joint is an inertial frame at $x=0$.  
+\noindent Such a system as a series of prismatic joints all attached to one common root. The root joint is an inertial frame at $x=0$.  
 
-\begin{center}
-        \begin{forest}
-for tree={
-    grow=south,
-    circle, draw, minimum size=3ex, inner sep=1pt,
-    s sep=7mm
-        }
-[Inertial
-    [L1]
-    [L2]
-    [L3]
-    [$\hdots$]
-]
-\end{forest}
-\end{center}
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/Examples/Platoon/PlatoonNE.png}
+    \caption{Platooning OKC Model}
+    \label{fig:platoon_diag_2}
+\end{figure}
+\noindent Such a system as
 \noindent We now demonstrate a 4 vehicle platoon. All vehicles has mass $m = 1$, and are children of the inertial frame. 
 \section{Reference Controller}
 \noindent The system will include a reference P controller that aims to get all vehicles to a desired speed, $v_d$.
@@ -40,8 +31,8 @@ for tree={
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\textwidth]{Figures/Platoon/NoPositions.png}
-    \includegraphics[width=0.4\textwidth]{Figures/Platoon/NoVelocities.png}
+    \includegraphics[width=0.4\textwidth]{Figures/Examples/Platoon/NoPositions.png}
+    \includegraphics[width=0.4\textwidth]{Figures/Examples/Platoon/NoVelocities.png}
     \caption{Platoon Response Without CBF}
     \label{fig:platoon_no_cbf}
 \end{figure}
@@ -53,9 +44,9 @@ for tree={
 \noindent Figure \ref{fig:platoon_cbf} shows the response of the system with the same reference controller, this time enforcing the CBF.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\textwidth]{Figures/Platoon/Positions.png}
-    \includegraphics[width=0.4\textwidth]{Figures/Platoon/Velocities.png}
-    \includegraphics[width=0.4\textwidth]{Figures/Platoon/CBF.png}
+    \includegraphics[width=0.4\textwidth]{Figures/Examples/Platoon/Positions.png}
+    \includegraphics[width=0.4\textwidth]{Figures/Examples/Platoon/Velocities.png}
+    \includegraphics[width=0.4\textwidth]{Figures/Examples/Platoon/CBF.png}
     \caption{Platoon Response With CBF}
     \label{fig:platoon_cbf}
 \end{figure}
@@ -66,7 +57,7 @@ for tree={
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{Figures/Drone/Drone.jpg}
+    \includegraphics[width=0.5\textwidth]{Figures/Examples/Drone/Drone.jpg}
     \caption{Drone}
     \label{fig:drone}
 \end{figure}
@@ -127,7 +118,7 @@ for tree={
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{Figures/Drone/DronePD.png}
+    \includegraphics[width=0.5\textwidth]{Figures/Examples/Drone/DronePD.png}
     \caption{Drone Path Reference Control}
     \label{fig:dronepd}
 \end{figure}
@@ -153,8 +144,8 @@ for tree={
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{Figures/Drone/DronePathNoCBF.png}
-    \includegraphics[width=0.45\textwidth]{Figures/Drone/DroneNoCBFValue.png}
+    \includegraphics[width=0.45\textwidth]{Figures/Examples/Drone/DronePathNoCBF.png}
+    \includegraphics[width=0.45\textwidth]{Figures/Examples/Drone/DroneNoCBFValue.png}
     \caption{Drone: No CBF}
     \label{fig:DronePathNoCBF}
 \end{figure}
@@ -165,8 +156,8 @@ for tree={
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{Figures/Drone/DronePathCBF.png}
-    \includegraphics[width=0.45\textwidth]{Figures/Drone/DroneCBFValue.png}
+    \includegraphics[width=0.45\textwidth]{Figures/Examples/Drone/DronePathCBF.png}
+    \includegraphics[width=0.45\textwidth]{Figures/Examples/Drone/DroneCBFValue.png}
     \caption{Drone: CBF}
     \label{fig:DronePathCBF}
 \end{figure}
@@ -176,7 +167,7 @@ for tree={
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Figures/7DOF Zeroed.png}
+    \includegraphics[width=\textwidth]{Figures/Examples/7DOF Zeroed.png}
     \caption{7 DOF Zeroed}
     \label{fig:7dofzero}
 \end{figure}
@@ -230,12 +221,12 @@ for tree={
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{Figures/HighDOFNat.png}
+    \includegraphics[width=0.5\textwidth]{Figures/Examples/HighDOFNat.png}
     \caption{7 DOF Manipulator Natural Response}
     \label{fig:HighDOFNat}
-    \includegraphics[width=0.3\textwidth]{Figures/7DOF0.png}
-    \includegraphics[width=0.3\textwidth]{Figures/7DOF150.png}
-    \includegraphics[width=0.3\textwidth]{Figures/7DOF300.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF0.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF150.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF300.png}
     \caption{7 DOF Manipulator Natural Response Model}
 \end{figure}
 
@@ -249,9 +240,9 @@ for tree={
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\textwidth]{Figures/7CBFResponse.png}
-    \includegraphics[width=0.4\textwidth]{Figures/7CBFControl.png}
-    \includegraphics[width=0.4\textwidth]{Figures/7CBF.png}
+    \includegraphics[width=0.4\textwidth]{Figures/Examples/7CBFResponse.png}
+    \includegraphics[width=0.4\textwidth]{Figures/Examples/7CBFControl.png}
+    \includegraphics[width=0.4\textwidth]{Figures/Examples/7CBF.png}
     \caption{7 DOF Manipulator CBF Response}
     \label{fig:7DOFCBFResponse1}
 \end{figure}
@@ -260,9 +251,9 @@ for tree={
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.3\textwidth]{Figures/BallOne.png}
-          \includegraphics[width=0.3\textwidth]{Figures/BallTwo.png}
-          \includegraphics[width=0.3\textwidth]{Figures/BallThree.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/BallOne.png}
+          \includegraphics[width=0.3\textwidth]{Figures/Examples/BallTwo.png}
+          \includegraphics[width=0.3\textwidth]{Figures/Examples/BallThree.png}
           
     \caption{7 DOF Manipulator CBF Response Model}
     \label{fig:7DOFBall1}
@@ -279,7 +270,7 @@ for tree={
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{Figures/7DOFCBF2.png}
+    \includegraphics[width=0.75\textwidth]{Figures/Examples/7DOFCBF2.png}
     \caption{7 DOF CBF 2}
     \label{fig:7dofcbf1}
 \end{figure}
@@ -290,8 +281,8 @@ for tree={
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{Figures/7DOF/7DOFNoCBFValue.png}
-    \includegraphics[width=0.45\textwidth]{Figures/7DOF/7DOFCBFValue.png}
+    \includegraphics[width=0.45\textwidth]{Figures/Examples/7DOF/7DOFNoCBFValue.png}
+    \includegraphics[width=0.45\textwidth]{Figures/Examples/7DOF/7DOFCBFValue.png}
     \caption{7-DOF Manipulator Barrier value}
     \label{fig:7dofbarriervalue2}
 \end{figure}
@@ -300,18 +291,18 @@ for tree={
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.3\textwidth]{Figures/7DOF/Frame0.png}
-    \includegraphics[width=0.3\textwidth]{Figures/7DOF/Frame56NOCBF.png}
-    \includegraphics[width=0.3\textwidth]{Figures/7DOF/Frame300NOCBF.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame0.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame56NOCBF.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame300NOCBF.png}
     \caption{7-DOF Manipulator without CBF}
     \label{fig:7dofnocbf2}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.3\textwidth]{Figures/7DOF/Frame0.png}
-    \includegraphics[width=0.3\textwidth]{Figures/7DOF/Frame56CBF.png}
-    \includegraphics[width=0.3\textwidth]{Figures/7DOF/Frame300CBF.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame0.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame56CBF.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame300CBF.png}
     \caption{7-DOF Manipulator with CBF}
     \label{fig:7dofcbf2}
 \section{Results}
