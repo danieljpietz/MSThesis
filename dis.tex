@@ -6,12 +6,19 @@
 \usepackage{fancyhdr}
 \usepackage{afterpage}
 \usepackage{graphicx}
-\usepackage{amsmath,amssymb,amsbsy}
+\usepackage{amsmath,amssymb,amsbsy, amsthm}
+\usepackage{tikz}
 \usepackage{dcolumn,array}
 \usepackage{tocloft}
 \usepackage{asudis}
-		
+\usepackage{float}
+\usepackage{algorithm, algpseudocode}
+\usepackage{caption}
+\usepackage[edges]{forest}
+\usepackage{subcaption}
+\input{typedef}
 \begin{document}
+
 %-----------------------front matter
 \pagenumbering{roman}
 \title{On the Numerical Computation of Second Order Control Barrier Functions}
@@ -56,11 +63,15 @@
 
 % This gets the headers for the LOF right on the first page.  Subsequent pages
 % are handled by the fancyhdr code in the asudis.sty file.
-
-
 %-----------------------body
 \doublespace
 \pagenumbering{arabic}
+\include{Chapters/Introduction}
+\include{Chapters/Background}
+\include{Chapters/Kinematics}
+\include{Chapters/Differential}
+\include{Chapters/Implementation}
+\include{Chapters/Examples}
 %-----------------------back matter
 {\singlespace
 % Making the references a "part" rather than a chapter gets it indented at

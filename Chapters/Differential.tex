@@ -1,0 +1,380 @@
+\chapter{Differentials}
+\noindent I begin with the definition of $f$
+\begin{align} \label{eqn:del_f}
+    \frac{\partial\f}{\partial \X} &= \frac{\partial}{\partial \X}
+    \begin{bmatrix}
+    \dotx \\
+    \H^{-1}\left (\Fn - \d \right )
+    \end{bmatrix} 
+\end{align}
+\begin{align*}
+    \frac{\partial\dotx}{\partial \X}  &= 
+    \begin{bmatrix}
+    \frac{\partial}{\partial \x_1}\dotx_1 &  \hdots & \frac{\partial}{\partial \x_n}\dotx_1 & \frac{\partial}{\partial \dotx_1}\dotx_1 & \hdots & \frac{\partial}{\partial \dotx_n}\dotx_1\\
+    \vdots & \ddots & \vdots & \vdots & \ddots & \vdots  & \\
+    \frac{\partial}{\partial \x_1}\dotx_n & \hdots & \frac{\partial}{\partial \x_n}\dotx_n  & \frac{\partial}{\partial \dotx_1}\dotx_n   & \hdots & \frac{\partial}{\partial \dotx_n}\dotx_n\\
+    \end{bmatrix} \\ &=
+    \begin{bmatrix}
+    0 & \hdots & 0 & 1 & \hdots & 0\\
+    \vdots & \ddots & \vdots & \vdots & \ddots & \vdots\\
+    0 & \hdots & 0 & 0 & \hdots & 1 \\
+    \end{bmatrix} = 
+    \begin{bmatrix}
+    \ZERO_{n \times n} & \EYE_{n \times n}
+    \end{bmatrix}
+\end{align*}
+\noindent Substituting into \ref{eqn:del_f} yields 
+\begin{align} \label{del_f_2}
+    \partialX{\f} &= 
+    \begin{bmatrix}
+    \ZERO_{n \times n}  ~~~~ \EYE_{n \times n}  \\
+    \frac{\partial}{\partial \X} \left (\H^{-1}\left (\Fn - \d \right ) \right ) 
+    \end{bmatrix}
+\end{align}
+\noindent Applying the product rule expands the lower half of equation \ref{eqn:del_f} further
+\begin{align} \label{eqn:d_f_lower}
+    \frac{\partial}{\partial \X} \left (\H^{-1}\left (\Fn - \d \right ) \right ) = 
+    \frac{\partial\H^{-1}}{\partial \X} \left (\Fn - \d \right ) +  \H^{-1}  \frac{\partial}{\partial \X} \left (\Fn - \d \right )
+\end{align} 
+\noindent Lemma \ref{lem:deriv_inverse} can be used to simplify this further. 
+\begin{lemma} \label{lem:deriv_inverse}
+For an invertible and differentiable matrix $A$, $\frac{\partial A^{-1}}{\partial x} = - A^{-1}\frac{\partial A}{\partial x} A^{-1}$.
+\begin{proof} 
+\begin{align*}
+\frac{\partial AA^{-1}}{\partial x} &= \frac{\partial I}{\partial x} \\
+\frac{\partial A}{\partial x} A^{-1} + A \frac{\partial A^{-1}}{\partial x} &= 0 \\
+A \frac{\partial A^{-1}}{\partial x} &= - \frac{\partial A}{\partial x} A^{-1}  \\
+ \frac{\partial A^{-1}}{\partial x} &= - A^{-1}\frac{\partial A}{\partial x} A^{-1}  \\
+\end{align*}
+\end{proof}
+\end{lemma}
+\noindent Finally, applying Lemma \ref{lem:deriv_inverse} to equation \ref{eqn:d_f_lower} gives
+\begin{align*}
+    \frac{\partial\H^{-1}}{\partial \X}  &= -\H^{-1} \frac{\partial\H }{\partial \X} \H^{-1} \\
+    \frac{\partial}{\partial \X} \left (\H^{-1}\left (\Fn - \d \right ) \right ) &=
+    -\H^{-1} \frac{\partial\H}{\partial \X}\H^{-1} \left (\Fn - \d \right ) + \H^{-1}  \frac{\partial}{\partial \X} \left (\Fn - \d \right )
+\end{align*}
+
+\section{Positional Derivatives}
+\noindent Recall from equation \ref{eqn:NE1} that the system mass matrix $\H$ does not depend on the joint velocities of the system. Thus $\partialX{H} = \begin{bmatrix}
+\partialx{H} & \ZERO
+\end{bmatrix}\transpose$. In an implementation, time and memory can be saved by only storing the nonzero portion of this result.
+\begin{align*}
+    \frac{\partial}{\partial \x} \H 
+    &= \frac{\partial}{\partial \x} \sum_B \H_B \\
+    &= \frac{\partial}{\partial \x} \sum_B \J_B\transpose\M_B\J_B \\
+    &= \sum_B \frac{\partial}{\partial \x} \J_B\transpose \left(\M_B\J_B\right) + \J_B\transpose \frac{\partial}{\partial \x} \left(\M_B\J_B\right) \\
+    &= \sum_B \frac{\partial}{\partial \x} \J_B\transpose \left(\M_B\J_B\right) + \J_B\transpose  \left(\frac{\partial}{\partial \x}\M_B\J_B + \M_B\frac{\partial}{\partial \x}\J_B\right) \\
+\end{align*}
+\subsection{Differential Jacobian}
+
+\noindent Starting with equation \ref{eqn:recurse_jacob},
+\begin{align} \nonumber
+    \frac{\partial\J_B}{\partial\x} &= \frac{\partial \J_B'}{\partial\x}\J_{B-1} + \J_B' \frac{\partial\J_{B-1}}{\partial\x} + \partialx{}\begin{bmatrix} 
+			{\IHat_B} \\
+			{{^I\T_{B-1}}\ITilde_B} \\
+			\end{bmatrix}  \\
+			&= \frac{\partial \J_B'}{\partial\x}\J_{B-1} + \J_B' \frac{\partial\J_{B-1}}{\partial\x} + \begin{bmatrix} 
+			{\ZERO} \\
+			{\partialx{^I\T_{B-1}}\ITilde_B} \\
+			\end{bmatrix}  \label{eqn:d_jacob}
+\end{align}
+\begin{align} \label{eqn_d_jp}
+    \frac{\partial \J_B'}{\partial \x} &=
+    \frac{\partial}{\partial \x}\begin{bmatrix}
+        {^B}\T_{B-1} & \ZERO_{3 \times 3} \\
+        {^I\T_{B-1}}\S{^{B-1}_{B-1}\r_{B}} & \EYE_{3 \times 3}
+    \end{bmatrix} \\
+    &=
+    \begin{bmatrix}
+        \frac{\partial}{\partial \x}{^B}\T_{B-1} & \ZERO_{3 \times 3} \\
+       \frac{\partial}{\partial \x}\left ( {^I\T_{B-1}}\S{^{B-1}_{B-1}\r_{B}} \right) & \ZERO_{3 \times 3}
+    \end{bmatrix} \nonumber
+\end{align}
+\noindent From \cite{woolfrey_2018},  the derivative of a local rotation matrix for a rotational link with respect to joint inputs is as follows
+\begin{align} \label{eqn:rot_diff}
+    \frac{\partial {^{B-1}\T_B}}{\partial \x_i} = \begin{cases}
+    \S{\hat{u_B}}{^{B-1}\T_B} & \text{if} \quad i = B\\
+    \ZERO & \text{otherwise}\\
+    \end{cases}
+\end{align}
+\noindent Where $u_B$ denotes the axis of rotation for link $B$. Note that by the definition of $\IHat_B$, the $B$-th column of is equal to $u_B$, with the remaining columns being 0. 
+\begin{lemma} \label{lem:d_s_rot}
+For a link $B$, $\frac{\partial {^{B-1}\T_B}}{\partial \x} = \Sn{\IHat_B}{^{B-1}\T_{B}}$
+\begin{proof}
+\noindent \textbf{Case 1) $i \ne B$ or $B$ is prismatic:}
+\begin{align*}
+    \Sn{\IHat_B}_i{^{B-1}\T_{B}} &= \S{{\IHat_{B_i}}}{^{B-1}\T_{B}} \\
+    &= \S{\ZERO_{3 \times 1}}{^{B-1}\T_{B}} \\
+    &= {\ZERO_{3 \times 3}}{^{B-1}\T_{B}} \\
+    &= {\ZERO_{3 \times 3}}\\
+    &= \frac{\partial {^{B-1}\T_B}}{\partial \x_i}
+\end{align*}
+\noindent \textbf{Case 2) $i = B$ and $B$ is rotational:} 
+\begin{align*}
+    \Sn{\IHat_B}_i{^{B-1}\T_{B}} &= \S{{\IHat_{B_i}}}{^{B-1}\T_{B}} \\
+    &= \S{{\IHat_{B_i}}}{^{B-1}\T_{B}} \\
+    &= \frac{\partial {^{B-1}\T_B}}{\partial \x_i}
+\end{align*}
+\end{proof}
+\end{lemma}
+\noindent The product rule is then used to derive the global rotation matrix ${^I\T_B}$.
+\begin{align}\nonumber
+\partialx{{^I\T_B}} &= \partialx{}\left (^I\T_{B-1}{^{B-1}\T}_B \right ) \\ \nonumber
+                    &= \partialx{^I\T_{B-1}} {^{B-1}\T}_B + ^I\T_{B-1}\partialx{{^{B-1}\T}_B} \\ \label{eqn:d_itb}
+                    &= \partialx{^I\T_{B-1}} {^{B-1}\T}_B + ^I\T_{B-1}\Sn{\IHat_B}{^{B-1}\T_{B}}
+\end{align}
+
+Returning to the computation of equation \ref{eqn_d_jp}, it can be seen the denominator contains the term $\frac{\partial}{\partial \x}\S{^{B-1}_{B-1}\r_{B}}$. A similar strategy to that used in lemma \ref{lem:d_s_rot} can be used to evaluate this.
+\begin{lemma} \label{lem:d_s_r}
+For a link $B$, $\frac{\partial}{\partial \x}\S{^{B-1}_{B-1}\r_{B}} = \Sn{\ITilde_B}$
+\begin{proof}
+\noindent For a link $B$ acting on axis $\hat{u}_B$
+\begin{align*}
+    \frac{\partial}{\partial \x_i}{^{B-1}_{B-1}\r_{B}} &= \begin{cases}
+    \hat{u}_B & \text{ if $B$ is prismatic and  } i = B \\
+    \ZERO_{3 \times 1} & \text{ otherwise }
+    \end{cases} \\ 
+    &\implies \partialx{}{^{B-1}_{B-1}\r_{B}} = \ITilde_B
+\end{align*}
+\begin{align*}
+    \frac{\partial}{\partial \x_i}\S{^{B-1}_{B-1}\r_{B}} &= \S{\frac{\partial}{\partial \x_i}{^{B-1}_{B-1}\r_{B}}}\\
+    &= \ITilde_B \\
+    &\implies \partialx{}{\S{^{B-1}_{B-1}\r_{B}}} = \Sn{\ITilde_B}
+\end{align*}
+\end{proof}
+\end{lemma}
+\begin{align*}
+    \frac{\partial}{\partial \x}\left ( {^I\T_{B-1}}\S{^{B-1}_{B-1}\r_{B}} \right) &= \frac{\partial{^I\T_{B-1}}}{\partial \x} \S{^{B-1}_{B-1}\r_{B}} +  {^I\T_{B-1}}\frac{\partial{\S{^{B-1}_{B-1}\r_{B}}}}{\partial \x} \\
+    &= \frac{\partial{^I\T_{B-1}}}{\partial \x} \S{^{B-1}_{B-1}\r_{B}} +  {^I\T_{B-1}}\Sn{\ITilde_B}
+\end{align*}
+\noindent Combining these results into equation \ref{eqn_d_jp},
+\begin{align} \label{eqn:d_jp_2}
+    \frac{\partial \J_B'}{\partial \x} &=
+    \begin{bmatrix}
+        \Sn{\IHat_B}{^B}\T_{B-1} & \ZERO_{3 \times 3} \\
+        \frac{\partial{^I\T_{B-1}}}{\partial \X} \S{^{B-1}_{B-1}\r_{B}} +  {^I\T_{B-1}}\Sn{\ITilde_B} & \ZERO_{3 \times 3}
+    \end{bmatrix} 
+\end{align}
+\noindent Equations \ref{eqn:d_jp_2} and \ref{eqn:d_itb} then give all the terms needed to evaluate equation \ref{eqn:d_jacob} numerically.
+
+\subsection{Differential Spatial Mass Matrix}
+\noindent Beginning with the definition of $M_B$ in equation \ref{eqn:spat_mass}.
+\begin{align} \label{eqn:d_spat_mass}
+	\partialx{}\M_B &=
+	\partialx{}\begin{bmatrix}
+	\BB\J           & \S{\BB\com}{^B\T_I} \\
+	 {^I\T_B}\S{\BB\com}\transpose & m_B \EYE_{3x3}   
+	\end{bmatrix} \nonumber \\ 
+	&=
+	\begin{bmatrix}
+	\ZERO_{3 \times 3} & \S{\BB\com}\partialx{^B\T_I} \\
+	 \partialx{}{^I\T_B}\S{\BB\com}\transpose &\ZERO_{3 \times 3}
+	\end{bmatrix}
+\end{align}
+\noindent Note that because this is a symmetric matrix, a single corner element of $M_B$ is needed in an implementation.
+
+\section{Velocity Derivatives}
+\noindent Unlike $\H$, $\d$ depends on velocity components of $\X$ and therefore the entire vector must be considered. Beginning with $\partialX{}\d$ from equation \ref{eqn:d_f_lower}.
+\begin{align} 
+        \partialX{}\d_B &= \partialX{}\J\transpose_B \left (\M_B \dotJ_B + \d'_B \right) + \J\transpose_B \partialX{} \left (\M_B \dotJ_B + \d'_B \right) \nonumber\\
+        &= \partialX{}\J\transpose_B \left (\M_B \dotJ_B + \d'_B \right) + \J\transpose_B \left (\partialX{} \M_B \dotJ_B + \M_B \partialX{} \dotJ_B + \partialX{} \d'_B \right) \label{eqn:d_d}
+\end{align}
+\begin{align}
+    \partialX{} \M_B = \begin{bmatrix}
+    \partialx{}\M_B &
+    \ZERO_{n \times 6 \times 6}
+    \end{bmatrix}\transpose
+\end{align}
+\begin{align} 
+    \partialX{} \dotJ_B &= \partialX{}\dotJ_B' \J_{B-1} + \dotJ_B' \partialX{}\J_{B-1} \label{eqn:d_dj} \\ \nonumber &+ \partialX{}\J_B' \dotJ_{B-1} + \J_B' \partialX{} \dotJ_{B-1} \\ \nonumber &+ \partialX{}\begin{bmatrix} 
+	\ZERO_{3 \times n} \\
+	{{^I{\T}_{B-1}}\S{^{B-1}_{B-1}\omega_I}\ITilde_B} \\
+	\end{bmatrix}  
+\end{align}
+\begin{align} \label{eqn:d_djp}
+    \partialX{}\dotJ_B' &= \partialX{}\begin{bmatrix}  
+	-\S{\BB\omega_{B-1}}{^B\T_{B-1}}                                       & \ZERO_{3 \times 3} \\
+	-{^I\T_{B-1}}
+	(\S{^{B-1}_{B-1}\omega_I}\S{^{B-1}_{B-1}\r_B}+\S{^{B-1}_{B-1}\dotr_B)} & \ZERO_{3 \times 3} \\
+	\end{bmatrix} 
+\end{align}
+\begin{align} \label{eqn:d_skew_rotation1}
+    \partialX{}\left (\S{\BB\omega_{B-1}}{^B\T_{B-1}} \right ) = \partialX{}\S{\BB\omega_{B-1}}{^B\T_{B-1}} + \S{\BB\omega_{B-1}}\partialX{}{^B\T_{B-1}}
+\end{align}
+\begin{lemma} \label{lem:d_s_omega}
+For a link $B$, $\frac{\partial}{\partial \dotx}\S{\BB\omega_{B-1}} = \Sn{\IHat_B}$
+\begin{proof}
+\noindent For a link $B$ acting on axis $\hat{u}_B$
+\begin{align*}
+    \frac{\partial}{\dot\partial \x_i}{\BB\omega_{B-1}} &= \begin{cases}
+    \hat{u}_B & \text{ if $B$ is rotational and  } i = B \\
+    \ZERO_{3 \times 1} & \text{ otherwise }
+    \end{cases} \\ 
+    &\implies \partialxdot{}{\BB\omega_{B-1}} = \IHat_B
+\end{align*}
+\begin{align*}
+    \frac{\partial}{\partial \dotx_i}\S{\BB\omega_{B-1}} &= \S{\frac{\partial}{\partial \dotx_i}{\BB\omega_{B-1}}}\\
+    &= \IHat_B \\
+    &\implies \partialxdot{}{\S{\BB\omega_{B-1}}} = \Sn{\IHat_B}
+\end{align*}
+\end{proof}
+\end{lemma}
+From Lemma \ref{lem:d_s_omega}, $\partialX{}S{\BB\omega_{B-1}} = \Sn{\begin{bmatrix}
+\ZERO_{3 \times n} & \IHat_B
+\end{bmatrix}}$, as $\BB\omega_{B-1}$ does not depend on $\x$. Substituting this result into equation \ref{lem:d_s_omega}, 
+\begin{align}
+    \partialX{}\left (\S{\BB\omega_{B-1}}{^B\T_{B-1}} \right ) &= \Sn{\begin{bmatrix}
+\ZERO_{3 \times n} & \IHat_B
+\end{bmatrix}}{^B\T_{B-1}} + \S{\BB\omega_{B-1}}\left (\Sn{\IHat_B}{^{B-1}\T_{B}} \right )\transpose \nonumber \\
+&= \Sn{\begin{bmatrix}
+\ZERO_{3 \times n} & \IHat_B
+\end{bmatrix}}{^B\T_{B-1}} - \S{\BB\omega_{B-1}}{^B\T_{B-1}}\Sn{\IHat_B}  \label{eqn:d_djp_upper}
+\end{align}
+%TODO: Ugly equation formatting
+Shifting focus to the second component of equation \ref{eqn:d_djp}.
+\begin{align*}
+    &\partialX{}\left ({^I\T_{B-1}}
+	(\S{^{B-1}_{B-1}\omega_I}\S{^{B-1}_{B-1}\r_B}+\S{^{B-1}_{B-1}\dotr_B)} \right ) = \\ 
+	&\partialX{} {^I\T_{B-1}} (\S{^{B-1}_{B-1}\omega_I}\S{^{B-1}_{B-1}\r_B}+\S{^{B-1}_{B-1}\dotr_B)} \\&+ {^I\T_{B-1}}
+	\partialX{}(\S{^{B-1}_{B-1}\omega_I}\S{^{B-1}_{B-1}\r_B}+\S{^{B-1}_{B-1}\dotr_B)} 
+\end{align*}
+\begin{align*}
+    &\partialX{}(\S{^{B-1}_{B-1}\omega_I}\S{^{B-1}_{B-1}\r_B}+\S{^{B-1}_{B-1}\dotr_B)} \\& = \partialX{}\S{^{B-1}_{B-1}\omega_I}\S{^{B-1}_{B-1}\r_B} + \S{^{B-1}_{B-1}\omega_I}\partialX{}\S{^{B-1}_{B-1}\r_B} + \partialX{}\S{^{B-1}_{B-1}\dotr_B} \\
+    &= \Sn{\begin{bmatrix}
+\ZERO_{3 \times n} & \IHat_B
+\end{bmatrix}}\S{^{B-1}_{B-1}\r_B} + \S{^{B-1}_{B-1}\omega_I}\Sn{\begin{bmatrix}
+\ITilde_B & \ZERO_{3 \times n}
+\end{bmatrix}} + \partialX{}\S{^{B-1}_{B-1}\dotr_B}
+\end{align*}
+
+\begin{lemma} \label{lem:d_s_rdot}
+For a link $B$, $\frac{\partial}{\partial \dotx}\S{^{B-1}_{B-1}\dotr_{B}} = \Sn{\ITilde_B}$
+\begin{proof}
+\noindent For a link $B$ acting on axis $\hat{u}_B$
+\begin{align*}
+    \frac{\partial}{\partial \dotx_i}{^{B-1}_{B-1}\dotr_{B}} &= \begin{cases}
+    \hat{u}_B & \text{ if $B$ is prismatic and  } i = B \\
+    \ZERO_{3 \times 1} & \text{ otherwise }
+    \end{cases} \\ 
+    &\implies \partialxdot{}{^{B-1}_{B-1}\dotr_{B}} = \ITilde_B
+\end{align*}
+\begin{align*}
+    \frac{\partial}{\partial \dotx_i}\S{^{B-1}_{B-1}\dotr_{B}} &= \S{\frac{\partial}{\partial \dotx_i}{^{B-1}_{B-1}\dotr_{B}}}\\
+    &= \ITilde_B \\
+    &\implies \partialxdot{}{\S{^{B-1}_{B-1}\dotr_{B}}} = \Sn{\ITilde_B}
+\end{align*}
+\end{proof}
+\end{lemma}
+\noindent Utilizing Lemma \ref{lem:d_s_rdot}, 
+\begin{align} \label{eqn:d_djp_lower}
+    \partialX{}(\S{^{B-1}_{B-1}\omega_I}\S{^{B-1}_{B-1}\r_B}+\S{^{B-1}_{B-1}\dotr_B)} &= \Sn{\begin{bmatrix}
+\ZERO_{3 \times n} & \IHat_B
+\end{bmatrix}}\S{^{B-1}_{B-1}\r_B} \\ &+ \S{^{B-1}_{B-1}\omega_I}\Sn{\begin{bmatrix}
+\ITilde_B & \ZERO_{3 \times n}
+\end{bmatrix}}\nonumber \\ &+ \Sn{\begin{bmatrix}
+\ZERO_{3 \times n} & \ITilde_B
+\end{bmatrix}} \nonumber
+\end{align}
+Equations \ref{eqn:d_djp_upper} and \ref{eqn:d_djp_lower} and then be substituted into \ref{eqn:d_djp} to compute $\partialX{}\dotJ_B'$.
+
+Moving to the final term in \ref{eqn:d_dj},
+\begin{align}
+    \partialX{}\begin{bmatrix} 
+	\ZERO_{2n \times 3 \times n} \\
+	{{^I{\T}_{B-1}}\S{^{B-1}_{B-1}\omega_I}\ITilde_B} \\
+	\end{bmatrix}  &= \begin{bmatrix} 
+	\ZERO_{2n \times 3 \times n} \\
+	\partialX{}{{^I{\T}_{B-1}}\S{^{B-1}_{B-1}\omega_I}\ITilde_B} \\
+	\end{bmatrix} \nonumber\\ \label{eqn:d_djstar}
+	&= \begin{bmatrix} 
+	\ZERO_{2n \times 3 \times n} \\
+	\left ( \partialX{}{^I{\T}_{B-1}}\S{^{B-1}_{B-1}\omega_I} + {^I{\T}_{B-1}}\partialX{}\S{^{B-1}_{B-1}\omega_I} \right ) \ITilde_B \\
+	\end{bmatrix} 
+\end{align}
+\noindent Equations \ref{eqn:d_djp} and \ref{eqn:d_djstar} can then be substituted into  \ref{eqn:d_dj} to compute $\partialX{}\dotJ_B$. 
+
+\begin{align} \nonumber
+    \partialX{}\d_B' &= \partialX{}\begin{bmatrix}                            
+	{\BB\omega_I } \times {\BB\J} {\BB\omega_I} \\
+	{^I\T_B}  (\BB\omega_I \times (\BB\omega_I \times {\BB\com}))\\
+	\end{bmatrix} \\ \nonumber
+	 &= \partialX{}\begin{bmatrix}                            
+	\S{\BB\omega_I } {\BB\J} {\BB\omega_I} \\
+	{^I\T_B}  (\S{\BB\omega_I}\S{\BB\omega_I} {\BB\com}))\\
+	\end{bmatrix} \\ \nonumber
+	&= \partialX{}\begin{bmatrix}                            
+	\S{\BB\omega_I } {\BB\J} {\BB\omega_I} \\
+	{^I\T_B}  (\S{\BB\omega_I}^2 {\BB\com}))\\ 
+	\end{bmatrix} \\ \nonumber
+	&= \begin{bmatrix}                            
+	\partialX{}\S{\BB\omega_I } {\BB\J} {\BB\omega_I} + \S{\BB\omega_I }{\BB\J}\partialX{}{\BB\omega_I} \\
+	\partialX{}{^I\T_B}(\S{\BB\omega_I}^2 {\BB\com}) + 2(\S{\BB\omega_I}\partialX{}\S{\BB\omega_I} {\BB\com}))\\
+	\end{bmatrix}
+\end{align}
+This result is then placed into equation \ref{eqn:d_d} to compute $ \partialX{}\d_B$.
+
+\section{Forces Derivatives}
+\noindent Recall from equation \ref{eqn:NE2} that the forces acting on are split into a sum of joint space forces and world space forces.
+\begin{align*}
+    \partialX{}\Fn_B & =\partialX{}\left (\F_{B_J} + \J_B\transpose \F_{B_W} \right ) \\
+    &= \partialX{}\F_{B_J} + \partialX{}\J_B\transpose \F_{B_W} + \J_B\transpose \partialX{}\F_{B_W}
+\end{align*}
+\noindent However for many common forces, such as those mentioned in Section \ref{sec:forces}, these symbolic derivatives turn out quite simple. In the joint space , 
+\subsubsection{Coulombic Friction}
+\begin{align} \label{eqn:coulomb}
+    \partialxdot{}\mathbf{\hat{k}}_{ij} = 
+    \begin{cases}
+         - 2\mu_{\mathbf{\hat{k}}}\delta(\dotx_i) & i = j = B \\
+         0 & \text{otherwise}
+    \end{cases} \\ \nonumber \\ \nonumber
+    \text{where $\delta$ is the Kronicker Delta Function}
+\end{align}
+\subsubsection{Viscous Friction}
+\begin{align} \label{eqn:coulomb}
+    \partialxdot{}\mathbf{\hat{k}}_{ij} = 
+    \begin{cases}
+         - \mu_{\mathbf{\hat{k}}} & i = j = B \\
+         0 & \text{otherwise}
+    \end{cases}
+\end{align}
+\subsubsection{Linear Springs}
+\begin{align} \label{eqn:spring}
+    \partialx{}\mathbf{\hat{k}}_{ij} = 
+    \begin{cases}
+         - k_{\mathbf{\hat{k}_i}} & i = j = B \\
+         0 & \text{otherwise}
+    \end{cases}
+\end{align}
+
+\noindent For positional forces, take the derivative of equation \ref{eqn:spat_force}
+\begin{align} \nonumber
+    \partialX{}\mathbf{\hat{V}} &= \partialX{}\begin{bmatrix}                                                    
+	{{\BB}}\hat{r}_{\hat{\mathbf{\hat{v}}}} \times {^B\T_I}{^I\hat{f}}_{\mathbf{\hat{v}}} \\ {^I\hat{f}}_{\mathbf{\hat{v}}} 
+	\end{bmatrix} \\  \nonumber
+	&= \partialX{}\begin{bmatrix}                                                    
+	\S{{{\BB}}\hat{r}_{\hat{\mathbf{\hat{v}}}}}{^B\T_I}{^I\hat{f}}_{\mathbf{\hat{v}}} \\ {^I\hat{f}}_{\mathbf{\hat{v}}} 
+	\end{bmatrix}  \\ \nonumber
+	&= \begin{bmatrix}                                                    
+	\partialX{}\left(\S{{{\BB}}\hat{r}_{\hat{\mathbf{\hat{v}}}}}{^B\T_I}{^I\hat{f}}_{\mathbf{\hat{v}}} \right) \\ \partialX{} {^I\hat{f}}_{\mathbf{\hat{v}}} 
+	\end{bmatrix}  \\ \nonumber
+	&= \begin{bmatrix}                                                    
+	\left(\Sn{\partialX{}{{\BB}}\hat{r}_{\hat{\mathbf{\hat{v}}}}} \right){^B\T_I}{^I\hat{f}}_{\mathbf{\hat{v}}} + \S{{{\BB}}\hat{r}_{\hat{\mathbf{\hat{v}}}}}\partialX{}\left({^B\T_I}{^I\hat{f}}_{\mathbf{\hat{v}}} \right) \\ \partialX{} {^I\hat{f}}_{\mathbf{\hat{v}}} 
+	\end{bmatrix}  \\ 
+	&= \begin{bmatrix}                                                    
+	\left(\Sn{\partialX{}{{\BB}}\hat{r}_{\hat{\mathbf{\hat{v}}}}} \right){^B\T_I}{^I\hat{f}}_{\mathbf{\hat{v}}} + \S{{{\BB}}\hat{r}_{\hat{\mathbf{\hat{v}}}}}
+	\left(\partialX{}{^B\T_I}{^I\hat{f}}_{\mathbf{\hat{v}}} + {^B\T_I}\partialX{}{^I\hat{f}}_{\mathbf{\hat{v}}} \right) \\
+	\partialX{} {^I\hat{f}}_{\mathbf{\hat{v}}} 
+	\end{bmatrix} 
+\end{align}
+\noindent It is then up to the system designer or package designer to provide definitions for $\partialX{}{{\BB}}\hat{r}_{\hat{\mathbf{\hat{v}}}}$ and $\partialX{} {^I\hat{f}}_{\mathbf{\hat{v}}} $. Like joint space forces, these can be relatively simple in many cases, such as gravity.
+\begin{align}
+    \nonumber \partialX{}{{\BB}}\hat{r}_{\hat{\mathbf{\hat{v}}}} &= \partialX{}{{\BB}\com} = \ZERO_{3 \times n} \\ 
+    \nonumber \partialX{} {^I\hat{f}}_{\mathbf{\hat{v}}} &= \partialX{}{^IG} = \ZERO_{3 \times n} \\ 
+    \partialX{}\mathbf{\hat{G}} &= \partialX{}
+    \begin{bmatrix}
+    \S{{{\BB}\com}}
+	\partialX{}{^B\T_I}{^IG}\\
+	\ZERO_{3 \times n}
+	\end{bmatrix} 
+\end{align}
