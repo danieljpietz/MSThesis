@@ -20,9 +20,8 @@ In the following sections, three example problems are demonstrated using the pro
     \caption{Platooning OKC Model}
     \label{fig:platoon_diag_2}
 \end{figure}
-\noindent Such a system as
-\noindent A four vehicle platoon will not be demonstrated. All vehicles have mass $m = 1$, and are children of the inertial frame. 
-\section{Reference Controller}
+\noindent A four vehicle platoon will now be demonstrated. All vehicles have mass $m = 1$, and are children of the inertial frame. 
+\subsection{Reference Controller}
 \noindent The system will include a reference P controller that aims to get all vehicles to a desired speed, $v_d$.
 \begin{align} \label{eqn:platoon_reference}
     u = v_d - \dotx
@@ -31,13 +30,13 @@ In the following sections, three example problems are demonstrated using the pro
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\textwidth]{Figures/Examples/Platoon/NoPositions.png}
-    \includegraphics[width=0.4\textwidth]{Figures/Examples/Platoon/NoVelocities.png}
+    \includegraphics[width=0.45\textwidth]{Figures/Examples/Platoon/NoPositions.png}
+    \includegraphics[width=0.45\textwidth]{Figures/Examples/Platoon/NoVelocities.png}
     \caption{Platoon Response Without CBF}
     \label{fig:platoon_no_cbf}
 \end{figure}
 
-\noindent We can see that all vehicles accelerate in unison achieving the desire speed. While the reference controller succeeds, many would consider this to be an unsafe platoon as the stopping distance between vehicles decreases as speed increases. To combat this, we can add a barrier to mandate at least 1 second of stopping time between adjacent vehicles. This is seen in following equation
+\noindent While all vehicle reach the desired speed, many would consider this to be an unsafe platoon as the stopping distance between vehicles decreases as speed increases. To combat this, a barrier can be added, mandating at least 1 second of stopping time between adjacent vehicles. This is given by the equation,
 \begin{align*}
     h(\x, \dotx) = \prod_{i = 0}^3 ((\x_{i + 1} - \x_i) -  \dotx_i)
 \end{align*}
@@ -57,8 +56,8 @@ In the following sections, three example problems are demonstrated using the pro
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{Figures/Examples/Drone/Drone.jpg}
-    \caption{Drone}
+    \includegraphics[width=0.4\textwidth]{Figures/Examples/Drone/Drone.jpg}
+    \caption{Drone Free Body Diagram}
     \label{fig:drone}
 \end{figure}
 \noindent We can model this system as 3 separate bodies with the following properties.
@@ -81,6 +80,12 @@ In the following sections, three example problems are demonstrated using the pro
         {^2_2 \com _2} &= \begin{bmatrix} 0& 0& 0 \end{bmatrix}\\
     \end{split}
 \end{align*}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{Figures/Examples/Drone/DroneNE.png}
+    \caption{Drone OKC Model}
+    \label{fig:drone}
+\end{figure}
 \noindent The force of the propellers $\left [ u_1 \quad u_2 \right ]$ is projected into the joint space with the following input matrix
 \begin{align*}
     \P(x, y, \theta) = \begin{bmatrix}
