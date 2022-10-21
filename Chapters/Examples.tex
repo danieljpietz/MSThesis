@@ -177,8 +177,8 @@ The simulation is now run again, this time enabling the control barrier function
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Figures/Examples/Zeroed.png}
-    \caption{7 DOF Zeroed}
+    \includegraphics[width=0.5\textwidth]{Figures/Examples/7DOF/Zeroed.png}
+    \caption{Seven DOF Manipulator at Zero Pose}
     \label{fig:7dofzero}
 \end{figure}
 
@@ -214,7 +214,7 @@ The simulation is now run again, this time enabling the control barrier function
     \end{split}
 \end{align*}
 
-\noindent High DOF coupled systems such as this are prime candidates for numerical acceleration as their symbolic equations grow exponentially with link count. When using MATLAB's symbolic math toolbox to compute the equations of motion for this manipulator, the resulting output script for $(\H, \F, \d)$ is nearly 4 thousand lines long, and takes 0.144657 seconds to execute, or 6.91Hz. This does not including computing the derivatives necessary for a CBF controller, which increases the execution time to \textbf{TODO: FIND THIS VALUE}. Using numerical methods, a CBF controller can execute at a frequency exceeding 90Hz on the same system. \newline
+High DOF coupled systems such as this are prime candidates for numerical acceleration as their symbolic equations grow exponentially with link count. When using MATLAB's symbolic math toolbox to compute the equations of motion for this manipulator, the resulting output script for $(\H, \F, \d)$ is nearly 4 thousand lines long, and takes 0.144657 seconds to execute, or 6.91Hz. This does not including computing the derivatives necessary for a CBF controller, which increases the execution time to \textbf{TODO: FIND THIS VALUE}. Using numerical methods, a CBF controller can execute at a frequency exceeding 120Hz on the same system. \newline
 
 \noindent For the following simulations, we use the following mass properties.
 
