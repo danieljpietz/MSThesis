@@ -238,10 +238,10 @@ High DOF coupled systems such as this are prime candidates for numerical acceler
     \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame50WithFrames.png}
     \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame100WithFrames.png}
     \caption{7 DOF Manipulator Natural Response Model}
-    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame0WithNoFrames.png}
-    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame50WithNoFrames.png}
-    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame100WithNoFrames.png}
-    \caption{7 DOF Manipulator Natural Response Model}
+ %   \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame0WithNoFrames.png}
+%    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame50WithNoFrames.png}
+%    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame100WithNoFrames.png}
+%    \caption{7 DOF Manipulator Natural Response Model}
 \end{figure}
 
 In the first simulation, the begins in a raised positions, with all links positioned at $\theta = \frac{\pi}{2}$. The goal of the system is to return to a zeroed pose. As a safety constraint, the end effector frame must not come within 0.5 meters of the ground. This is given by the following barrier function
@@ -259,7 +259,7 @@ In the first simulation, the begins in a raised positions, with all links positi
     \label{fig:7dofbarriervalue2}
 \end{figure}
 
-\noindent Not only does the best effort controller breach the safety set, but it is unable to recover once it does. The CBF controller on the other hand maintains a safe configuration throughout. Figures \ref{fig:7dofnocbf2} and \ref{fig:7dofcbf2} show a model of this simulation both with and without CBF enforcement. The circle marks the 0.5m safety margin about the end effector desired by our barrier.
+\noindent It is clear that in the best effort controller the saftey set is breached. The CBF controller on the other hand maintains a safe configuration throughout. Figures \ref{fig:7dofnocbf2} and \ref{fig:7dofcbf2} show a model of this simulation both with and without CBF enforcement. The circle marks the 0.5m safety margin about the end effector desired by our barrier.
 
 \begin{figure}[H]
     \centering
