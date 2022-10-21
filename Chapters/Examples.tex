@@ -21,8 +21,8 @@ In the following sections, three example problems are demonstrated using the pro
     \label{fig:platoon_diag_2}
 \end{figure}
 \noindent A four vehicle platoon will now be demonstrated. All vehicles have mass $m = 1$, and are children of the inertial frame. 
-\subsection{Reference Controller}
-\noindent The system will include a reference P controller that aims to get all vehicles to a desired speed, $v_d$.
+
+The system will include a reference P controller that aims to get all vehicles to a desired speed, $v_d$.
 \begin{align} \label{eqn:platoon_reference}
     u = v_d - \dotx
 \end{align}
@@ -214,7 +214,7 @@ The simulation is now run again, this time enabling the control barrier function
     \end{split}
 \end{align*}
 
-High DOF coupled systems such as this are prime candidates for numerical acceleration as their symbolic equations grow exponentially with link count. When using MATLAB's symbolic math toolbox to compute the equations of motion for this manipulator, the resulting output script for $(\H, \F, \d)$ is nearly 4 thousand lines long, and takes 0.144657 seconds to execute, or 6.91Hz. This does not including computing the derivatives necessary for a CBF controller, which increases the execution time to \textbf{TODO: FIND THIS VALUE}. Using numerical methods, a CBF controller can execute at a frequency exceeding 120Hz on the same system. \newline
+High DOF coupled systems such as this are prime candidates for numerical acceleration as their symbolic equations grow exponentially with link count. When using MATLAB's symbolic math toolbox to compute the equations of motion for this manipulator, the resulting output script for $(\H, \F, \d)$ is nearly 4 thousand lines long This does not including computing the derivatives necessary for a CBF controller, which is over 65 thousand lines long. On the test system, this symbolic code executes at 45Hz,  Using numerical methods, a CBF controller can execute at a frequency exceeding 120Hz on the same system. \newline
 
 \noindent For the following simulations, we use the following mass properties.
 
@@ -231,63 +231,25 @@ High DOF coupled systems such as this are prime candidates for numerical acceler
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{Figures/Examples/HighDOFNat.png}
+    \includegraphics[width=0.5\textwidth]{Figures/Examples/7DOF/NaturalResponse.png}
     \caption{7 DOF Manipulator Natural Response}
     \label{fig:HighDOFNat}
-    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF0.png}
-    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF150.png}
-    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF300.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame0WithFrames.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame50WithFrames.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame100WithFrames.png}
+    \caption{7 DOF Manipulator Natural Response Model}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame0WithNoFrames.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame50WithNoFrames.png}
+    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame100WithNoFrames.png}
     \caption{7 DOF Manipulator Natural Response Model}
 \end{figure}
 
-\noindent We will first demonstrate a simple barrier function, keeping the end from colliding with the ground. This can be done by performing forward kinematics to obtain the height of the last frame, and subtracting a safety margin of 0.5 $m$ from it. Thus, we have
-
+In the first simulation, the begins in a raised positions, with all links positioned at $\theta = \frac{\pi}{2}$. The goal of the system is to return to a zeroed pose. As a safety constraint, the end effector frame must not come within 0.5 meters of the ground. This is given by the following barrier function
 \begin{align}
     h(\X) = \left (\sum_{n=0}^5 {^I\T_n}{^n_n\r_{n+1}} \right) \cdot \begin{bmatrix} 0 & 0 & 1\end{bmatrix} - 0.5
 \end{align}
 
-\noindent Imposing this safety constraint on the natural response, we get the following.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.4\textwidth]{Figures/Examples/7CBFResponse.png}
-    \includegraphics[width=0.4\textwidth]{Figures/Examples/7CBFControl.png}
-    \includegraphics[width=0.4\textwidth]{Figures/Examples/7CBF.png}
-    \caption{7 DOF Manipulator CBF Response}
-    \label{fig:7DOFCBFResponse1}
-\end{figure}
-
-\noindent In the 3D model of the system, we can see the system is successful in keeping a 1 meter threshold off of the ground.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\textwidth]{Figures/Examples/BallOne.png}
-          \includegraphics[width=0.3\textwidth]{Figures/Examples/BallTwo.png}
-          \includegraphics[width=0.3\textwidth]{Figures/Examples/BallThree.png}
-          
-    \caption{7 DOF Manipulator CBF Response Model}
-    \label{fig:7DOFBall1}
-    
-\end{figure}
-
-\noindent We can enforce a stronger safety constraint by requiring all links remain above the ground. If we can treat the height of each link as a separate CBF, the product of these functions is a valid CBF for all safety constraints. We have this with the following equation
-
-\begin{align}
-    h(\X) =  \prod_{m = 0}^5 \left ( \left (\sum_{n=0}^m {^I\T_n}{^n_n\r_{n+1}} \right) \cdot \begin{bmatrix} 0 & 0 & 1\end{bmatrix} \right )
-\end{align}
-
-\noindent Simulating this from a zero-angle start, we have the following CBF evaluation.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{Figures/Examples/7DOFCBF2.png}
-    \caption{7 DOF CBF 2}
-    \label{fig:7dofcbf1}
-\end{figure}
-
-\noindent Across all simulations, the response rate of the controller was on average 91.72 Hz.
-
-\noindent In this simulation, we use a reference controller to go from a starting configuration of $\theta_i = -\dfrac{\pi}{2} \quad \forall i= 0\hdots6$ to the zero state. Figure \ref{fig:7dofbarriervalue2} shows the value of $h$ during the simulation, both with and without safety enforcement.
+\noindent A reference controller is used to move the system from a starting configuration of $\theta_i = -\dfrac{\pi}{2} \quad \forall i= 0\hdots6$ to the zero state. Figure \ref{fig:7dofbarriervalue2} shows the value of $h$ during the simulation, both with and without safety enforcement.
 
 \begin{figure}[H]
     \centering
