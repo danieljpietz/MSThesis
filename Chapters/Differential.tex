@@ -1,5 +1,5 @@
-\chapter{Differentials}
-\noindent I begin with the definition of $f$
+\chapter{\uppercase{\algname{}}} \label{chap:differential_kinematics}
+Beginning with the definition of $f$
 \begin{align} \label{eqn:del_f}
     \frac{\partial\f}{\partial \X} &= \frac{\partial}{\partial \X}
     \begin{bmatrix}
@@ -91,14 +91,14 @@ A \frac{\partial A^{-1}}{\partial x} &= - \frac{\partial A}{\partial x} A^{-1}  
        \frac{\partial}{\partial \x}\left ( {^I\T_{B-1}}\S{^{B-1}_{B-1}\r_{B}} \right) & \ZERO_{3 \times 3}
     \end{bmatrix} \nonumber
 \end{align}
-\noindent From \cite{woolfrey_2018},  the derivative of a local rotation matrix for a rotational link with respect to joint inputs is as follows
+\noindent The derivative of a local rotation matrix for a rotational link with respect to joint inputs is as follows \Cite{woolfrey_2018}.
 \begin{align} \label{eqn:rot_diff}
     \frac{\partial {^{B-1}\T_B}}{\partial \x_i} = \begin{cases}
     \S{\hat{u_B}}{^{B-1}\T_B} & \text{if} \quad i = B\\
     \ZERO & \text{otherwise}\\
     \end{cases}
 \end{align}
-\noindent Where $u_B$ denotes the axis of rotation for link $B$. Note that by the definition of $\IHat_B$, the $B$-th column of is equal to $u_B$, with the remaining columns being 0. 
+\noindent Where $u_B$ denotes the axis of rotation for link $B$. Note that by the definition of $\IHat_B$, the $B$-th column is equal to $u_B$, with the remaining columns being 0. 
 \begin{lemma} \label{lem:d_s_rot}
 For a link $B$, $\frac{\partial {^{B-1}\T_B}}{\partial \x} = \Sn{\IHat_B}{^{B-1}\T_{B}}$
 \begin{proof}

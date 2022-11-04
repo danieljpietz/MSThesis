@@ -1,3 +1,16 @@
-\chapter{Introduction}
+\chapter{INTRODUCTION}
 
-\textbf{}
+\section{Motivation}
+ 
+Between 2010 and 2020, the number of robotic systems in industrial applications nearly tripled, from 1.06 million units to over 3 million \Cite{richter_2021}. This growth is not limited to industrial applications, with the common individual beginning to interact with robotics systems daily. The year 2017 saw the first commercial launch of Starship Technologies, a food delivery robot typically deployed at college campuses \Cite{Kottasova}. More high-stakes, complex, applications are beginning to be automated as well. These include cleaning up from nuclear meltdowns \Cite{stahl_2021}, heart surgeries \Cite{mayo_2022}, and self-driving cars \Cite{thrun_2010}. Such an increase in quantity and complexity brings two risks: an increase in the number of failures, and an increase in the consequences of failures. Thus, there is a growing necessity to implement control systems capable of guaranteeing the safety of a system. Control Barrier Functions (CBFs) were developed to address this need \Cite{Ames1}, however, their computational complexity makes their implementation infeasible for many real-time applications. In order to fully utilize CBFs, a more efficient implementation is needed.\newline
+
+\section{Contribution of the Thesis}
+
+ In this thesis, I present a novel algorithm, the \algname{} algorithm for implementing second-order control barrier functions on any rigid open kinematic chain.
+
+ \section{Thesis Structure}
+ 
+ Chapter \ref{chap:Background} introduces the notation and background knowledge necessary for communicating the \algname{} algorithm. Chapter \ref{chap:Kinematics} outlines the dynamics algorithm used for numerically evaluating the equations of motion of an open kinematic chain \Cite{isenberg_2020}.  Chapter \ref{chap:differential_kinematics} contains the derivation of the gradient dynamics for computing terms necessary for second-order control barrier functions. Chapter \ref{chap:implementation} shows how the dynamics and \algname{} algorithms can be used to implement a second-order CBF on any rigid open kinematic chain. Chapter \ref{chap:examples} contains simulations to compare this implementation against symbolic execution for different types of systems. Finally, Chapter  \ref{chap:conclusions} discusses the author's conclusions and future work on this topic.
+
+
+%{HOOK LINE, Something about Industry 4.0 and rapidly growing automation}. With this growing industry, comes an increasing level of interaction with autonomous agents {cite some hospital thing}, as well as agents operating without any human guidance outright {Cite spot patrol.}. Because of this, the problem of ensuring such systems achieve their goals in a safe manner is becoming evermore important. To address this, we often categorize our system requirements into two categories, safety and liveliness. As put by Ames, a safe system is one where ``bad'' things do not happen, and a lively system is one where ``good'' things eventually happen (\cite{Ames1}). Safety requirements of often encoded by defining a ``safe set'' representing all states of the system in which bad things do not occur. Similarly, liveliness requirements are defined as a ``goal set'' , representing states we wish our system to eventually achieve. With definitions for these sets defined, the next challenge is designing a control system guaranteeing that trajectories within the safe-set can never leave, whilst also eventually entering the goal set. To solve this, Control Barrier Functions (CBF) and Control Lyaponov Functions (CLF) were developed.

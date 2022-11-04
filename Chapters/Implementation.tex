@@ -1,27 +1,57 @@
-\chapter{Implementation}
+\chapter{IMPLEMENTATION} \label{chap:implementation}
 
-\begin{algorithm}[H]
-	\caption{Link Initialization}\label{alg:link_init}
-	\begin{algorithmic}
-		\Require $p \in \mathbb{L}$, $i \in \mathbb{Z}$, $t \in \{\text{rotational}, \text{prismatic}\}$, $\mu \in \mathbb{R}^3$, $\T_0 \in \mathbb{R}^9$, $\r_0 \in \mathbb{R}^3$, $m \in \mathbb{R}$, $\com \in \mathbb{R}^3$, $\J \in \mathbb{R}^6$
-		\State $p_\B$ $\gets p$ 
-		\State $n \gets p.n$
-		\If{$t$  = rotational}
-		\State $\IHat_{\B_i}$ $\gets$ $\mu$
-		\State $\ITilde_\B$ $\gets$ $\ZERO_{3 \times n}$
-		\Else
-		\State $\ITilde_{\B_i}$ $\gets$ $\mu$
-		\State $\IHat_\B$ $\gets$ $\ZERO_{3 \times n}$
-		\EndIf
-		\State ${\BL}\r_{\B_0} \gets \r_0$\\
-		\State ${^\mathbf{B-1}}\T_{\B_0} \gets \T_0$
-		\State $m_\B \gets m$
-		\State $\com_\B \gets \com$
-		\State $\BB\J \gets \J$
-	\end{algorithmic}
-\end{algorithm}
+This chapter shows an implementation of Isenberg Dynamics and \algname{} together to compute the constraints of a second-order CBF. The main object used in this implementation is the \textit{Link}, used to store the mass properties, as well as the local position of a body in an open kinematic chain. A link is a 9 - tuple  defines as the following.
+
+\begin{align} \label{eqn:link_tuple}
+    l_B = \begin{pmatrix}
+        B \in \mathbb{N} & 
+        p \in \mathbb{L} \union \cup \emptyset &
+        ^{B-1}\T_B \in \mathbb{R}^{3 \times 3} &
+        ^{B-1}_{B-1}\r_B \in \mathbb{R}^3 \\
+       \IHat_B \in \mathbb{R}^{3 \times n} &
+       \ITilde_B \in \mathbb{R}^{3 \times n} &
+       m_B \in \mathbb{R} &
+       \BB\com \in \mathbb{R}^3 &
+       \BB\J \in \mathbb{R}^{3 \times 3} 
+    \end{pmatrix}
+\end{align}
+\noindent where
+\begin{align*}
+\begin{split}
+    B &\equiv \text{Index in state vector} \\
+    p &\equiv \text{Parent link} \\
+    ^{B-1}\T_B &\equiv \text{Local Rotation Matrix} \\
+    ^{B-1}_{B-1}\r_B &\equiv \text{Local Position Vector} \\
+\end{split}
+\begin{split}
+    \IHat_B &\equiv {\BB\omega_{\mathbf{B-1}}} = \IHat_B\dotx  \\
+    \ITilde_B &\equiv \mathbf{^{B-1}_{B-1}}\dotr_{\mathbf{B}} = \ITilde_B\dotx  \\
+    m_B &\equiv \text{Mass} \\
+    \BB\com &\equiv \text{Center of Mass} \\
+    \BB\J&\equiv \text{Inertia Tensor} 
+\end{split}
+\end{align*}
+\noindent For links without a parent, the convention is to model them as though they are attached to an immobile link of infinite mass, i.e. the Inertial Reference Frame link. In an implementation, this allows one to use the same recursive function calls for root links as they would for non-root links, rather than writing a special case for the root.
 
 
+\section{Algorithms}
+
+\noindent For each link in a system, the implementations of dynamics and \algname{} are each split into two stages representing the Kinematics and Dynamics portions of their computation. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/Implementation/IsenDynamcs.jpg}
+    \caption{Dynamics}
+    \label{fig:isendyn}
+    \includegraphics[width=\textwidth]{Figures/Implementation/GradDynamics.jpg}
+    \caption{\algname{}}
+    \label{fig:graddyn}
+\end{figure}
+
+\noindent While this could be done purely to follow the best practices of writing small, concise functions, there are some performance gains worth mentioning as well. Such a split across these stages allows the potential of a rudimentary parallel pipeline, as the dynamics stage does not depend on any information from the previous link. Thus, one could run the dynamics step of link $B-1$ during the kinematics step of link $B$. It also allows the kinematics stages to easily be skipped for the Inertial Reference Frame link, which is assumed to be unmoving and thus does not need to update its Kinematics. \newpage
+
+Algorithms \ref{alg:kinematics} - \ref{alg:diff_dynamics} show the complete description for each of these procedures.
+ 
 \begin{algorithm}[H]
 	\caption{Kinematics}\label{alg:kinematics}
 	\begin{algorithmic}
@@ -119,6 +149,16 @@
 	\end{algorithmic}
 \end{algorithm}
 
+One can implement a CBF controller using these algorithms, by performing the dynamics procedure followed by \algname{}, and using the result in a CBF constraint. This is shown in Figure \ref{fig:cbf_controller_complete}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/Implementation/CBFControl.jpg}
+    \caption{CBF Controller with\algname{}}
+    \label{fig:cbf_controller_complete}
+\end{figure}
+
+\noindent The top-level calls for an entire system are given in Algorithms \ref{alg:dyn} and \ref{alg:sys_dyn}.
 \begin{algorithm}[H]
 	\caption{Link Dynamics}\label{alg:dyn}
 	\begin{algorithmic}
@@ -129,10 +169,10 @@
 	\State $\partialX{}\d \gets \ZERO_{2n \times n}$
 	\State $\partialX{}\F \gets \ZERO_{2n \times n}$
 	
-	\State \textbf{Kinematics}
-	\State \textbf{Dynamics}
-	\State \textbf{Differential\_Kinematics}
-	\State \textbf{Differential\_Dynamics}
+	\State \textbf{do} \textbf{Kinematics}
+	\State \textbf{do} \textbf{Dynamics}
+	\State \textbf{do} \textbf{Differential\_Kinematics}
+	\State \textbf{do} \textbf{Differential\_Dynamics}
 	\For {$\mathbf{c} \in \mathbf{c}_\B$}
 	\State $(\H, \d,\F, \partialX{}\H, \partialX{}\d,\partialX{}\F)  $ += Link\_Dynamics($\mathbf{c}, \x, \dotx$) 
 	\EndFor
@@ -146,8 +186,8 @@
 	\State $(\H, \d,\F, \partialX{}\H, \partialX{}\d,\partialX{}\F) \gets $ Link\_Dynamics(root, $\x, \dotx$) 
 	\State $\ddotx \gets \H^{-1}\left (\F - \d \right )$
 	\State $\partialX{} \ddotx \gets \H^{-1}\left (\partialX{\H} \ddotx + \partialX{\F} - \partialX{\d} \right )$
-	\State $\f \gets \begin{bmatrix} \dotx \\ \ddotx \end{bmatrix}$
-	\State $\g \gets \begin{bmatrix} \ZERO_{n \times n} \\ \H^{-1}\P \end{bmatrix}$
+	\State $\f \gets \begin{bmatrix} \dotx & \ddotx \end{bmatrix}$
+	\State $\g \gets \begin{bmatrix} \ZERO_{n \times n} & \H^{-1}\P \end{bmatrix}$
 	\State $\partialX{}\f \gets \begin{bmatrix}
     \ZERO_{n \times n}  ~~~~~~ \EYE_{n \times n}  \\
     \partialX{} \ddotx 

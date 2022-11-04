@@ -1,8 +1,8 @@
-\chapter{Background}
+\chapter{BACKGROUND} \label{chap:Background}
 \section{Notation}
 
 \begin{definition} \label{tensor_indexing}
-\noindent For a tensor of rank 3 $\tensor{A}$, let $\tensor{A}_{i,j,k}$ denote the element at the $i$-th page, $j$-th row, and $k$-th colmumn.
+\noindent For a tensor of rank 3 $\tensor{A}$, let $\tensor{A}_{i,j,k}$ denote the element at the $i$-th page, $j$-th row, and $k$-th column.
 
 \begin{figure}[H]
     \centering
@@ -32,7 +32,7 @@ at(\x * \xs, \x * \ys) %shift the matrix
 \end{definition}
 
 \begin{definition} \label{matrix_derivative}
-Let $\mathbf{A} \in \mathbb{R}^{m \times n}$ and $\mathbf{\x} \in \mathbb{R}^{p \times 1}$. We define $\tensor{B} = \frac{\partial}{\partial \x}\mathbf{A} \in \mathbb{R}^{p \times m \times n }$ such that
+Let $\mathbf{A} \in \mathbb{R}^{m \times n}$ and $\mathbf{\x} \in \mathbb{R}^{p \times 1}$. $\tensor{B} = \frac{\partial}{\partial \x}\mathbf{A} \in \mathbb{R}^{p \times m \times n }$ such that
 \begin{align*}
     \tensor{B}_{i, j, k} = \frac{\partial}{\partial \x_i}\mathbf{A}_{j, k}
 \end{align*}
@@ -57,13 +57,13 @@ Let $\Sn{\mathbf{B}} : \mathbb{R}^{3 \times n} \rightarrow \mathbb{R}^{n \times 
 \begin{definition}Let $^A_B\r_C$ denote the position of frame $C$ with respect to frame $B$, measured in frame $A$.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\textwidth]{Figures/Intro/Position.png}
+    \includegraphics[width=0.5\textwidth]{Figures/Intro/FramesNC.png}
     \caption{Position Notation}
     \label{fig:position_notation}
 \end{figure}
 \end{definition}
 
-\begin{definition}Let $^A\T_B$ denote the rotation matrix of frame $B$ frame frame A, with columns equating the basis vectors of $B$ measured in $A$.
+\begin{definition}Let $^A\T_B$ denote the rotation matrix of frame $B$ frame A, with columns equating the basis vectors of $B$ measured in $A$.
 \end{definition}
 
 \begin{definition}Let $^A_B\omega_C$ denote the angular velocity of frame $C$ with respect to frame $B$, measured in frame $A$.
@@ -81,22 +81,22 @@ We define a link / rigid body $B$ as an tuple $B = \left (\B, \quad m_\B, \quad 
 \end{align*}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\textwidth]{Figures/Intro/BodyFixedFrame.png}
+    \includegraphics[width=0.5\textwidth]{Figures/Intro/BodyFrames.png}
     \caption{Body Notation}
     \label{fig:body_notation}
 \end{figure}
 
-\noindent References to a link/body and its frame of reference may be used interchangeably throughout this paper.
+\noindent References to a link/body and its frame of reference are used interchangeably throughout this text.
 \end{definition}
 
 \subsubsection{Joints}
 
 \begin{definition}
-A \textbf{prismatic joint} is a link which actuates on a linear axis.
+A \textbf{prismatic joint} is a link that actuates on a linear axis.
 \end{definition}
 
 \begin{definition}
-A \textbf{rotational joint} is a link which actuates on a rotating axis.
+A \textbf{rotational joint} is a link that actuates on a rotating axis.
 \end{definition}
 
 \begin{definition}
@@ -108,7 +108,7 @@ An \textbf{open kinematic chain} is a series of connected links containing no cl
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.4\textwidth]{Figures/Intro/OKC.png}
-    \includegraphics[width=0.4\textwidth]{Figures/Intro/NOTOKC.png}
+    \includegraphics[width=0.4\textwidth]{Figures/Intro/NOKC.png}
     \caption{Open vs Closed Kinematic Chain}
     \label{fig:okc}
 \end{figure}
@@ -116,12 +116,12 @@ An \textbf{open kinematic chain} is a series of connected links containing no cl
 
 
 \begin{definition}
-Let $B-1$ denote the link/body which a link/body $B$ is attached to in an open kinematic chain, off of which measurements are made.
+Let $B-1$ denote the link/body to which a link/body $B$ is attached in an open kinematic chain, off of which measurements are made.
 \end{definition}
 
 \section{The Newton Euler Formulation}
 
-The Newton Euler equations describe the transnational and rotational motion of a rigid body through space \cite{Hahn, asada_slotine_1986, shabana_2010}. Measured with respect to a coordinate frame at the center of mass of a body, 
+The Newton-Euler equations describe the translational and rotational motion of a rigid body through space \Cite{Hahn, asada_slotine_1986, shabana_2010}. Measured with respect to a coordinate frame at the center of mass of a body, 
 
 \begin{align}
     \begin{bmatrix}
@@ -165,12 +165,12 @@ The Newton Euler equations describe the transnational and rotational motion of a
 
 %TODO: CHECK THIS CITATION TO MAKE SURE IT WORKS
 
-\noindent Equation \ref{eqn:NE0} is limited to a single rigid body, however it provides a starting point to model the motion of more complex systems. Such a model is given by the following equation \cite{asada_slotine_1986, tedrake}, sometimes referred to as the \textit{Robot Equation} \cite{isenberg_2020}.
+\noindent Equation \ref{eqn:NE0} is limited to a single rigid body, however, it provides a starting point to model the motion of more complex systems. Such a model is given by the following equation \Cite{asada_slotine_1986, tedrake}, sometimes referred to as the \textit{Robot Equation} \Cite{isenberg_2020}.
 \begin{align} \label{eqn:NE1}
     \H(\x)\ddotx = \F(\x, \dotx) - \d(\x, \dotx)
 \end{align}
 
-\noindent $\H$ is a positive definite $n \times n$ matrix, commonly called the System Mass Matrix \cite{riley_hobson_bence_2006}. $\F$ contains external forces acting on the system, and $\d$ contains the Centrifugal and Coriolis forces, also called fictitious forces. Crucially, equation \ref{eqn:NE1} can be rewritten into a form that is Control Affine. \newline
+\noindent $\H$ is a positive definite $n \times n$ matrix, commonly called the System Mass Matrix \Cite{riley_hobson_bence_2006}. $\F$ contains external forces acting on the system, and $\d$ contains the Centrifugal and Coriolis forces, also called fictitious forces. Crucially, equation \ref{eqn:NE1} can be rewritten into a form that is Nonlinear Control Affine. \newline
 
 A nonlinear control-affine system takes the following form
 \begin{align} \label{eqn:NLCA}
@@ -222,16 +222,42 @@ A nonlinear control-affine system takes the following form
 
 % TODO: These equations are ugly. Fix the formatting.
 
-\noindent With the system in control affine form allows for the usage of optimization based controllers, such as Controller Barrier Functions (CBF) and Control Lyaponov Functions (CLF).
+\noindent With the system in control affine form allows for the usage of optimization-based controllers, such as Controller Barrier Functions (CBF).
 
-\section{The CBF - CLF - QP}
+\section{The CBF  - QP}
 
-\begin{align} \label{eqn:CBF-CLF-QP}
-    u(x) = \argmin_{(u, \delta) \in \mathbb{R}^{m + 1}} \quad &\frac{1}{2}u^TH(x)u + p \delta^2\\
-    \textbf{s.t} \quad &\Lie_fV(x) + \Lie_gV(x)u \leq -\gamma(V(x)) + \delta \nonumber\\ &\Lie_fh(x) + \Lie_gh(x)u \geq -\alpha(h(x)) \nonumber
+%TODO: Intro to this section
+Control Barrier Functions provide an architecture for safety-aware controllers on nonlinear control affine systems \Cite{Ames1}. Such controllers operate by finding a control input that maintains invariance in the state of a system, $x \in \mathbb{R}^n$ with respect to a safe set, $C \in \mathbb{R}^n$. This safe safe set is represented in the controller through a \textit{barrier function}, $h(x) : \mathbb{R}^n \rightarrow \mathbb{R}$. We define $h(x)$ such that $C$ is a \textit{super-level set} of $h(x)$, yielding
+\begin{align}
+\begin{split}
+    C = \left \{ x \in \mathbb{R}^n | h(x) \geq 0 \right \} 
+\end{split}
+\begin{split}
+\end{split}
+\begin{split}
+    \partial C = \left \{ x \in \mathbb{R}^n | h(x) = 0 \right \}
+\end{split}
+\begin{split}
+\end{split}
+\begin{split}
+    \text{Int}(C) = \left \{ x \in \mathbb{R}^n | h(x) > 0 \right \}
+\end{split}
 \end{align}
 
-\noindent This controller is limited in that it is only applicable to first order systems. That is, systems in which the control input appears in the first derivative. Equation \ref{eqn:NE1} describes a second order system, prohibiting the use of this controller. To implement a positional controller on these types of systems, High Order CBFs (HOCBF) must be used \cite{Xiao, Nguyen}. \newline
+\noindent One can then prove safety for a system by showing $\dot{h}(x) \geq 0 \forall x \in \partial C$ \Cite{nagumo_1942}. In the case of nonlinear control affine systems, this is shown by
+\begin{align}
+    \Lie_f h(x) + \Lie_g h(x)u \geq -\alpha(h(x))
+\end{align}
+\noindent Where $\alpha(x)$ is a class $\kappa$ function, and $\Lie_p q$ denotes the \textit{Lie Derivative}, $\nabla q \cdot p$. \newline
+This requirement can be expressed as a quadratic optimization problem, the goal of which is to find a control input that guarantees invariance of the safe set, shown in the following
+\begin{align} \label{eqn:CBF-CLF-QP}
+    u(x) = \argmin_{u \in \mathbb{R}^{m}} \quad &\frac{1}{2}(u - u_{ref}))^TH(x)(u - u_{ref})\\
+    \textbf{s.t} \quad  &\Lie_f h(x) + \Lie_g h(x)u \geq -\alpha(h(x)) \nonumber
+\end{align}
+
+\noindent In this setting, $u_{ref}$ denotes the value of some reference controller on the system. In plain English, the goal of this quadratic program is to find the closest control input to $u_{ref}$ that satisfies the safety constraints of the system. In the case of min-norm controllers, $u_{ref}$ is set to 0. \newline
+
+Note that the controller in Equation \ref{eqn:CBF-CLF-QP} is limited in that it is only applicable to first-order systems. That is systems in which the control input appears in the first derivative. Equation \ref{eqn:NE1} describes a second-order system, prohibiting the use of this controller. To implement a positional controller on these types of systems, High Order CBFs (HOCBF) must be used \Cite{Xiao, Nguyen}. \newline
 
 The general constraint equation for a HOCBF is, 
 \begin{align}
@@ -251,11 +277,7 @@ The general constraint equation for a HOCBF is,
 \begin{align} \label{eqn:order2_cbf}
      \Lie_f^2 h(x) + \Lie_g\Lie_f h(x)u + \Lie_f h(x) + \alpha_2\left (\dot{h}(x) + \alpha_1(h(x))) \right ) \geq 0
 \end{align}
-\noindent Reversing the inequality produces the analogous CLF constraint 
-\begin{align} \label{eqn:order2_clf}
-     \Lie_f^2 V(x) + \Lie_g\Lie_f V(x)u + \Lie_f V(x) + \gamma_2\left (\dot{h}(x) + \gamma_1(h(x))) \right ) \leq 0
-\end{align}
-Expanding the Lie derivatives in \ref{eqn:order2_cbf} and \ref{eqn:order2_clf} yeilds
+Expanding the Lie derivatives in \ref{eqn:order2_cbf} yields
 \begin{align}
     \Lie_f^2 h(x) + \Lie_g\Lie_f h(x)u &= \Lie_f (\nabla h(x) \cdot f(x)) + \Lie_g(\nabla h(x) \cdot f(x))u \nonumber\\
     &= \nabla (\nabla h(x) \cdot f(x)) \cdot f(x) + \nabla (\nabla h(x) \cdot f(x)) \cdot g(x) u \nonumber\\
@@ -264,6 +286,7 @@ Expanding the Lie derivatives in \ref{eqn:order2_cbf} and \ref{eqn:order2_clf} y
 \end{align}
 \noindent where $\nabla^2h(x)$ denotes the Hessian matrix of $h$. \newline
 
-\noindent Recall that $h(x)$ is a design choice, and can often be represented symbolically. This means the developer of a control system can solve for $\nabla h(x)$ and $\nabla^2 h(x)$ offline, and optimize their online computation. While $f(x)$ and $g(x)$ are typically not available in a symbolic format, numerical methods exist for efficiently compute them at runtime \cite{isenberg_2020, walker_orin_1982}. The same cannot be said for $\nabla f(x)$, which cannot be computed from a numerical definition of $f$. Symbolically, $f$ can grow exponentially in the number degrees of freedom, ruling it out for realtime computation above a few links. \newline
+Remember that $h(x)$ is a design choice, and can often be represented symbolically. This allows control designers to derive closed-form solutions for $\nabla h(x)$ and $\nabla^2 h(x)$ in advance, and optimize their online computation. The same is not necessarily true for $f(x)$ and $g(x)$. For many types of systems, open kinematic chains, these terms can grow exponentially in the number of degrees of freedom. This makes it infeasible to compute their value in real-time symbolically. Instead, algorithms were developed to compute their values numerically \Cite{isenberg_2020, walker_orin_1982}. This is sufficient for the evaluation of first-order CBFs, but second-order systems require the computation of $\nabla f(x)$, which cannot be solved from a numerical definition of $f$. To makes matters worse, the symbolic size of $\nabla f(x)$ is often even larger than $f(x)$, requiring $2n$ derivatives to be taken to account for the $n$ position and $n$ velocity dimensions in the state space. \newline
 
-To combat the complexity of computing $\nabla f$, existing works use approximations, such as training neural networks to approximate CBF controllers \cite{Yaghoubi}. While these significantly improve online performance, approximations by nature have weaker safety guarantees. Instead, I present a novel method of computing $\nabla f$ numerically, based on techniques for computing $f(x)$ by \cite{isenberg_2020}.
+Existing works use approximations to combat the complexity of computing $\nabla f$, such as training neural networks to approximate CBF controllers \Cite{Yaghoubi}. While these significantly improve online performance, approximations by nature have weaker safety guarantees. Instead, I present a novel method of computing $\nabla f$ numerically, based on a technique for computing $f(x)$ introduced in \Cite{isenberg_2020}.
+

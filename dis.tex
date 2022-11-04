@@ -2,7 +2,7 @@
 \documentclass[12pt,letterpaper]{report}
 \usepackage{natbib}
 \usepackage{geometry}
-%\usepackage{fancyheadings} fancyheadings is obsolete: replaced by fancyhdr. JL
+%\usepackage{fancyheadings} fancyheadings is obsolete: replaced by fancyhJL
 \usepackage{fancyhdr}
 \usepackage{afterpage}
 \usepackage{graphicx}
@@ -16,22 +16,47 @@
 \usepackage{caption}
 \usepackage[edges]{forest}
 \usepackage{subcaption}
-\input{typedef}
-\begin{document}
+\usepackage{listings}
 
+\lstdefinestyle{python}
+{
+    numbers=left,
+    numbersep=1em,
+    numberstyle=\tiny\color{black}\noaccsupp,
+    frame=single,
+    framesep=\fboxsep,
+    framerule=1pt,
+    rulecolor=\color{black},
+    xleftmargin=\dimexpr\fboxsep+\fboxrule\relax,
+    xrightmargin=\dimexpr\fboxsep+\fboxrule\relax,
+    breaklines=true,
+    tabsize=2,
+    columns=fullflexible,
+    language=Python,
+}
+
+\input{typedef}
+
+
+%
+
+
+\begin{document}
+\fancyhead[L]{}
+\fancyhead[R]{}
 %-----------------------front matter
 \pagenumbering{roman}
-\title{On the Numerical Computation of Second Order Control Barrier Functions}
+\title{On the Numerical Computation of Second-Order Control Barrier Functions}
 \author{Daniel Pietz}
-\degreeName{Master of Science in Engineering}
+\degreeName{Master of Science}
 \defensemonth{November}
 \gradmonth{December}
 \gradyear{2022}
-\chair{Dr. Georgios Fainekos, Co-Chair \\ Dr. Sarma Vrudhula, Co-Chair \\ Dr. Theodore Pavlic\\ Dr. Giulia Pedrielli}		
+\chair{Georgios Fainekos, Co-Chair \\ Sarma Vrudhula, Co-Chair \\ Theodore Pavlic\\ Giulia Pedrielli}		
 \maketitle
 \doublespace
 \include{abstract}
-\acknowledgementpage{}
+%\acknowledgementpage{}
 %\include{ack}
 \tableofcontents
 % This puts the word "Page" right justified above everything else.
@@ -39,6 +64,8 @@
 % Asking LaTeX for a new page here guarantees that the LOF is on a separate page
 % after the TOC ends.
 \newpage
+\fancyhead[L]{}
+\fancyhead[R]{}
 % Making the LOT and LOF "parts" rather than chapters gets them indented at
 % level -1 according to the chart: top of page 4 of the document at
 % ftp://tug.ctan.org/pub/tex-archive/macros/latex/contrib/tocloft/tocloft.pdf
@@ -52,26 +79,28 @@
 \addcontentsline{toc}{part}{LIST OF FIGURES}
 \listoffigures
 \addtocontents{lof}{Figure~\hfill Page \par}
-\newpage
-\addcontentsline{toc}{part}{LIST OF SYMBOLS}
-\clearpage
-\symbolspage{}
-\addcontentsline{toc}{part}{PREFACE}
-\clearpage
+%\addcontentsline{toc}{part}{PREFACE}
+%\clearpage
 \addtocontents{toc}{CHAPTER \par}					
-\prefacepage{\\Enter content here.}
+
 
 % This gets the headers for the LOF right on the first page.  Subsequent pages
 % are handled by the fancyhdr code in the asudis.sty file.
+
+
 %-----------------------body
 \doublespace
 \pagenumbering{arabic}
+\doublespace
+\pagenumbering{arabic}
+\pagestyle{plain}
 \include{Chapters/Introduction}
 \include{Chapters/Background}
 \include{Chapters/Kinematics}
 \include{Chapters/Differential}
 \include{Chapters/Implementation}
 \include{Chapters/Examples}
+\include{Chapters/Conclusion}
 %-----------------------back matter
 {\singlespace
 % Making the references a "part" rather than a chapter gets it indented at
