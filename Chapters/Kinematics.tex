@@ -1,5 +1,5 @@
-\chapter{Kinematics} %TODO: Make sure the paul_1992 citation works
-Forward kinematics is the process of computing the motion of points on a robot (typically an end-effector \cite{paul_1992}) from a specified set of joint parameters. In the case of OKC's this is done iteratively beginning with the root frame of the system and branching outward. This gives the following
+\chapter{DYNAMICS} \label{chap:Kinematics}
+Forward kinematics is the process of computing the motion of points on a robot, typically an end-effector \Cite{paul_1992} from a specified set of joint parameters. In the case of OKC's this is done iteratively beginning with the root frame of the system and branching outward. This gives the following
 \begin{align}
 	\begin{split}                                                           
 	{^I\T_B} = {^I\T_{B-1}}{^{B - 1}\T_{B}}                                 
@@ -9,7 +9,7 @@ Forward kinematics is the process of computing the motion of points on a robot (
 	\end{split}                                                             
 \end{align}
 
-\noindent The linear and angular velocities of a frame are found by computing its Geometric Jacobian matrix, $\J_B$. This matrix, maps the joint velocities of the system to the spatial velocities of $B$ (\cite{shabana_2010}). Similarly, the time derivative of this matrix ($\dotJ_B$) can be used to solve for accelerations.
+\noindent The linear and angular velocities of a frame are found by computing its Geometric Jacobian matrix, $\J_B$. This matrix, maps the joint velocities of the system to the spatial velocities of $B$ \Cite{shabana_2010}. Similarly, the time derivative of this matrix ($\dotJ_B$) can be used to solve for accelerations.
 \begin{align*}
 	\begin{split}                               
 	\begin{bmatrix}                             
@@ -25,7 +25,7 @@ Forward kinematics is the process of computing the motion of points on a robot (
 	\end{split}                                 
 \end{align*}
 
-These matrices are also useful for projecting real-world mass of a body into the joint space. Let $\M_B$ denote the \emph{spatial inertia matrix} of a link $B$, defined as (\cite{featherstone_2007}):
+These matrices are also useful for projecting real-world mass of a body into the joint space. Let $\M_B$ denote the \emph{spatial inertia matrix} of a link $B$, defined as \Cite{featherstone_2007}:
 \begin{align} \label{eqn:spat_mass}
 	\M_B =
 	\begin{bmatrix}
@@ -34,7 +34,7 @@ These matrices are also useful for projecting real-world mass of a body into the
 	\end{bmatrix}
 \end{align}
 
-\noindent From this, the system mass matrix and vector of fictitious forces vector described in \ref{eqn:NE1} can be computed (\cite{isenberg_2020}).
+\noindent From this, the system mass matrix and vector of fictitious forces vector described in \ref{eqn:NE1} can be computed \Cite{isenberg_2020}.
 \begin{align} \label{eqn:NE2}
 	\begin{split}
 	\H    & = \Big.\sum_B \H_B                           \\
@@ -45,7 +45,7 @@ These matrices are also useful for projecting real-world mass of a body into the
 	\H_B  & = {\J^T_B}\M_B\J_B                           \\
 	\d_B  & = \J^T_B \left (\M_B \dotJ_B + \d'_B \right) \\
 	\d_B' & = \begin{bmatrix}                            
-	{\BB\omega_I } \times \BB\J {\BB\omega_I} \\
+	{\BB\omega_I } \times {\BB\J} {\BB\omega_I} \\
 	{^I\T_B}  (\BB\omega_I \times (\BB\omega_I \times \com))\\
 	\end{bmatrix} \\
 	\Fn_B & = \F_{B_J} + \J_B^T \F_{B_W}
@@ -53,10 +53,10 @@ These matrices are also useful for projecting real-world mass of a body into the
 \end{align}
 
 %TODO: Workshop this sentence
-\noindent While this gives clear application to {$\J_B$} and $\dotJ_B$, it does not give a way to compute them. Like the systems equations of motion, the symbolic definitions for these matrices grow rapidly with the number of degrees of freedom. To avoid this, techniques were developed to compute these terms numerically, such as that developed by \cite{isenberg_2020}.
+\noindent While this gives clear application to {$\J_B$} and $\dotJ_B$, it does not give a way to compute them. Like the systems equations of motion, the symbolic definitions for these matrices grow rapidly with the number of degrees of freedom. To avoid this, techniques were developed to compute these terms numerically, such as that developed by \Cite{isenberg_2020}.
 
 \section{Recursive Jacobian Computation}
-\noindent When analyzing OKC systems, the motion of a link provides a point of reference for all links in its subtree. A recursive definition for the Jacobian can be developed, starting from the root and iterating outward. %From \cite{isenberg_2020}, we get Lemma \ref{lem:recurse_jacobian}.
+\noindent When analyzing OKC systems, the motion of a link provides a point of reference for all links in its subtree. A recursive definition for the Jacobian can be developed, starting from the root and iterating outward. %From \Cite{isenberg_2020}, we get Lemma \ref{lem:recurse_jacobian}.
 
 \begin{lemma} \label{lem:recurse_jacobian}
 	Given a body $B$ with parent $B - 1$, the geometric Jacobian of body $B$,
@@ -169,7 +169,7 @@ Joint Space forces act directly on the axis of motion of a link, and includes fo
 	\F_{B_J} = \Big.\sum_{\mathbf{\hat{k}_i} \in \mathbf{\hat{K}_B}}\mathbf{\hat{k}_i}
 \end{align}
 
-\noindent Forces such as friction are trivial to compute in this space \cite{lynch_park_2019}. For example, modeling Coloumbic friction on a body $B$ gives the force vector 
+\noindent Forces such as friction are trivial to compute in this space \Cite{lynch_park_2019}. For example, modeling Coloumbic friction on a body $B$ gives the force vector 
 \begin{align} \label{eqn:coulomb}
     \mathbf{\hat{k}_i} = 
     \begin{cases}

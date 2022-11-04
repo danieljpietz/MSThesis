@@ -248,14 +248,15 @@ BIOGRAPHICAL SKETCH
 \renewcommand{\@cfttocstart}{ 
 \newgeometry{top=1.0in,hmargin=1.25in,height=9.0in,
 includehead,includefoot,letterpaper}%,showcrop,showframe}
-
 \doublespace
 \pagestyle{fancyplain}
-\afterpage{\lhead{\cftlabel}\rhead{Page}}
+
 }
 
 \renewcommand{\@cfttocfinish}{
 \restoregeometry\clearpage\afterpage{\lhead{}\rhead{}}
+\fancyhead[L]{}
+\fancyhead[R]{}
 }
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

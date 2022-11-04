@@ -1,0 +1,53 @@
+class Drone(pycbf2.NESystem):
+    def __init__(self):
+        super(Drone, self).__init__()
+
+        for i in range(3):
+            link = Link(
+                parent=links[i - 1] if i else self,
+                mass=i == 1,
+                center_of_mass=[0, 0, 0],
+                inertia_tensor=np.eye(3),
+                index=i,
+                axis=np.eye(3)[i],
+                link_type=LinkType.prismatic if i < 2 else LinkType.rotational,
+                rotation_local=np.eye(3),
+                position=[0, 0, 0],
+            )
+            links.append(link)
+        links[1].add_force(force.Gravity([0, -9.81, 0]))
+
+        t, x, xdot = self.cbf_vars()
+        
+                class Controller(cbf.ControlFunc):
+                    def __init__(self):
+                        self.cbf = ((sym.sin(x[0]) + 0.5) - x[1]) * (
+                            x[1] - (sym.sin(x[0]) - 0.5)
+                        )
+                        self.error = 0
+        
+                    def input_matrix(self, x, xdot):
+                        theta = x[2]
+                        return np.array(
+                            [
+                                [-np.sin(theta), -np.sin(theta)],
+                                [np.cos(theta), np.cos(theta)],
+                                [-1, 1],
+                            ]
+                        )
+        
+                    def uref(self, x, xdot):
+                        xGoal = 5 * np.pi / 2
+                        yGoal = np.sin(x[0])
+                        xdotGoal = (xGoal - x[0]) - 1.5 * xdot[0]
+                        height_forces = (
+                            np.array([9.81, 9.81]) / (2 * np.cos(x[2]))
+                            + (yGoal - np.array([x[1], x[1]]))
+                            - 3 * xdot[1]
+                        )
+                        lat_forces = np.zeros(2)
+                        lat_forces[1] = np.arctan(xdot[0] - xdotGoal) - 5 * x[2] - 5 * xdot[2]
+                        lat_forces[0] = -lat_forces[1]
+                        return height_forces + lat_forces
+        
+                self.controller = Controller()

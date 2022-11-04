@@ -1,18 +1,17 @@
-\chapter{Examples}
-
-In the following sections, three example problems are demonstrated using the proposed algorithm to compute a CBF-QP controller. Section \ref{sec:platooning} demonstrates a convoy of platooning vehicles, to illustrate a more abstract example of OKC systems. Section \ref{sec:drone} demonstrates a drone navigating in the presence of obstacles, to show application to under-actuated systems. Finally, section \ref{sec:7dof} demonstrates a seven-degree of freedom manipulator, to show realtime performance on a chaotic high degree of freedom system.
+\chapter{EXAMPLES} \label{chap:examples}
+In the following sections, three example problems are demonstrated using the proposed algorithm to compute a CBF-QP controller. Section \ref{sec:platooning} demonstrates a convoy of platooning vehicles, to illustrate a more abstract example of OKC systems. Section \ref{sec:drone} demonstrates a drone navigating in the presence of obstacles, to show application to under-actuated systems. Finally, section \ref{sec:7dof} demonstrates a seven-degree of freedom manipulator, to show real-time performance on a chaotic high degree of freedom system. All implementations are run on a 2019 MacBook Pro with a 2.3GHz 8-Core Intel Core i9 CPU. The framework is written in Python and uses the OSQP quadratic program solver by \cite{osqp}.
 
 
 
 \section{Platooning} \label{sec:platooning}
-\noindent A commonly cited use case for control barrier functions is platooning. In this application, a set of vehicles traveling along a road which to reach a desired speed while maintaining adequate stopping distance. 
+\noindent A commonly cited use case for control barrier functions is platooning. In this application, a set of vehicles traveling along a road which to reach the desired speed while maintaining adequate stopping distance. 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Figures/Examples/Platoon/Platoon.png}
     \caption{Platooning Busses}
     \label{fig:platoon_diag}
 \end{figure}
-\noindent Such a system as a series of prismatic joints all attached to one common root. The root joint is an inertial frame at $x=0$.  
+\noindent Such a system is modeled as a series of prismatic joints all attached to one common root. The root joint is an inertial frame at $x=0$.  
 
 \begin{figure}[H]
     \centering
@@ -20,9 +19,7 @@ In the following sections, three example problems are demonstrated using the pro
     \caption{Platooning OKC Model}
     \label{fig:platoon_diag_2}
 \end{figure}
-\noindent A four vehicle platoon will now be demonstrated. All vehicles have mass $m = 1$, and are children of the inertial frame. 
-
-The system will include a reference P controller that aims to get all vehicles to a desired speed, $v_d$.
+\noindent A four-vehicle platoon will now be demonstrated. All vehicles have mass $m = 1$ and are children of the inertial frame.  The system will include a reference P controller that aims to get all vehicles to the desired speed, $v_d$.
 \begin{align} \label{eqn:platoon_reference}
     u = v_d - \dotx
 \end{align}
@@ -36,9 +33,9 @@ The system will include a reference P controller that aims to get all vehicles t
     \label{fig:platoon_no_cbf}
 \end{figure}
 
-\noindent While all vehicle reach the desired speed, many would consider this to be an unsafe platoon as the stopping distance between vehicles decreases as speed increases. To combat this, a barrier can be added, mandating at least 1 second of stopping time between adjacent vehicles. This is given by the equation,
+\noindent While all vehicles reach the desired speed, many would consider this to be an unsafe platoon as the stopping distance between vehicles decreases as speed increases. To combat this, a barrier can be added, mandating at least 1 second of stopping time between adjacent vehicles. This is given by the equation,
 \begin{align*}
-    h(\x, \dotx) = \prod_{i = 0}^3 ((\x_{i + 1} - \x_i) -  \dotx_i)
+    h(\x, \dotx) = \prod_{i = 0}^2 ((\x_{i + 1} - \x_i) -  \dotx_i)
 \end{align*}
 \noindent Figure \ref{fig:platoon_cbf} shows the response of the system with the same reference controller, this time enforcing the CBF.
 \begin{figure}[H]
@@ -49,10 +46,11 @@ The system will include a reference P controller that aims to get all vehicles t
     \caption{Platoon Response With CBF}
     \label{fig:platoon_cbf}
 \end{figure}
-\noindent Unlike the first example, the vehicles now separate to maintain adequate stopping time as they accelerate. Vehicles still accelerate when able, and eventually all vehicles reach the target velocity.
+\noindent Unlike the first example, the vehicles now separate to maintain adequate stopping time as they accelerate. Vehicles still accelerate when able, and eventually, all vehicles reach the target velocity. The controller achieved an average refresh rate of 188.92 Hz.
+
 \section{Drone Cave Navigation}  \label{sec:drone}
 
-\noindent To demonstrate an underactuated system, we will model a simple drone in two dimensions.
+\noindent To demonstrate an underactuated system, a drone modeled in two dimensions is used.
 
 \begin{figure}[H]
     \centering
@@ -60,7 +58,7 @@ The system will include a reference P controller that aims to get all vehicles t
     \caption{Drone Free Body Diagram}
     \label{fig:drone}
 \end{figure}
-\noindent This system can be modelled as 3 separate bodies with the following properties.
+\noindent This system can be modeled as 3 separate bodies with the following properties.
 \begin{align*}
     \begin{split}
         {^I_I \r _0} &= \begin{bmatrix} x & 0 & 0\end{bmatrix} \\
@@ -129,7 +127,7 @@ The system will include a reference P controller that aims to get all vehicles t
     \label{fig:dronepd}
 \end{figure}
 
-\noindent While the drone does not significantly overshoot the target position, there is overshoot on the intermediate path. However, with a CBF implemented the system can avoid obstacles even with this overshoot. 
+\noindent While the drone does not significantly overshoot the target position, there is an overshoot on the intermediate path. However, with a CBF implemented the system can avoid obstacles even with this overshoot. 
 
 \subsection{Collision Avoidance}
 
@@ -142,12 +140,12 @@ The system will include a reference P controller that aims to get all vehicles t
         \text{Floor}(x) = \sin{x} - 1
     \end{split}
 \end{align}
-\noindent The CBF shall enforce a safety buffer of 0.5 meters between the position of drone and boundaries of the cave. The following barrier function describes such a requirement
+\noindent The CBF shall enforce a safety buffer of 0.5 meters between the position of the drone and the boundaries of the cave. The following barrier function describes such a requirement
 \begin{align}
     h(x, y, \theta) = (\text{Roof}(x) - y + 0.5)(y - 0.5 - \text{Floor}(x))
 \end{align}
  
- Before enforcing the barrier, a best effort approach will be shown. Only the reference controller will be utilized with a target height of $y = \sin{x}$, corresponding  to the center of the cave. Figure \ref{fig:DronePathNoCBF} shows a simulation of this best effort controller. 
+ Before enforcing the barrier, a best-effort approach will be shown. Only the reference controller will be utilized with a target height of $y = \sin{x}$, corresponding  to the center of the cave. Figure \ref{fig:DronePathNoCBF} shows a simulation of this best-effort controller. 
 
 \begin{figure}[H]
     \centering
@@ -169,11 +167,11 @@ The simulation is now run again, this time enabling the control barrier function
     \label{fig:DronePathCBF}
 \end{figure}
 
-\noindent Unlike the previous example, with a best effort collision avoidance system, the CBF controller can successfully maintain a 0.5m safety margin between the floor and ceiling of the cave. On the test system, this controller ran at an average 276.97Hz.
+\noindent Unlike the previous example, with a best-effort collision avoidance system, the CBF controller can successfully maintain a 0.5m safety margin between the floor and ceiling of the cave. On the test system, this controller ran at an average 276.97Hz.
 
 \section{Seven DOF Manipulator}  \label{sec:7dof}
 
-\noindent This example demonstrates a seven degree-of-freedom arm manipulator.
+\noindent This example demonstrates a seven-degree-of-freedom arm manipulator.
 
 \begin{figure}[H]
     \centering
@@ -214,10 +212,8 @@ The simulation is now run again, this time enabling the control barrier function
     \end{split}
 \end{align*}
 
-High DOF coupled systems such as this are prime candidates for numerical acceleration as their symbolic equations grow exponentially with link count. When using MATLAB's symbolic math toolbox to compute the equations of motion for this manipulator, the resulting output script for $(\H, \F, \d)$ is nearly 4 thousand lines long This does not including computing the derivatives necessary for a CBF controller, which is over 65 thousand lines long. On the test system, this symbolic code executes at 45Hz,  Using numerical methods, a CBF controller can execute at a frequency exceeding 120Hz on the same system. \newline
-
-\noindent For the following simulations, we use the following mass properties.
-
+High DOF-coupled systems such as this are prime candidates for numerical acceleration as their symbolic equations grow exponentially with link count. When using MATLAB's symbolic math toolbox to compute the equations of motion for this manipulator, the resulting output script for $(\H, \F, \d)$ is nearly 4 thousand lines long This does not include computing the derivatives necessary for a CBF controller, which is over 65 thousand lines long. On the test system, this symbolic code executes at 45Hz,  Using numerical methods, a CBF controller can execute at a frequency exceeding 120Hz on the same system. \newline
+\noindent The following mass parameters are used,
 \begin{align*}
     m &= 1\\
     {^0_0}\J &=  \text{diag}\left (\left [\dfrac{95}{96}, \dfrac{95}{96},  \dfrac{5}{16} \right ] \right )\\
@@ -227,7 +223,7 @@ High DOF coupled systems such as this are prime candidates for numerical acceler
 \end{align*}
 \noindent For external forces,  each link experiences a gravitational acceleration of $-1 \dfrac{m}{s^2}$, as well as Coloumbic friction with $\mu = 1$. \newline
 
-\noindent From a zeroed position, we observe the following natural response of the system.
+\noindent Figure \label{fig:HighDOFNat} shows the natural response of the system from the zero position.
 
 \begin{figure}[H]
     \centering
@@ -238,13 +234,9 @@ High DOF coupled systems such as this are prime candidates for numerical acceler
     \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame50WithFrames.png}
     \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame100WithFrames.png}
     \caption{7 DOF Manipulator Natural Response Model}
- %   \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame0WithNoFrames.png}
-%    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame50WithNoFrames.png}
-%    \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame100WithNoFrames.png}
-%    \caption{7 DOF Manipulator Natural Response Model}
 \end{figure}
 
-In the first simulation, the begins in a raised positions, with all links positioned at $\theta = \frac{\pi}{2}$. The goal of the system is to return to a zeroed pose. As a safety constraint, the end effector frame must not come within 0.5 meters of the ground. This is given by the following barrier function
+In the first simulation, the begins in a raised position, with all links positioned at $\theta = \frac{\pi}{2}$. The goal of the system is to return to a zeroed pose. As a safety constraint, the end effector frame must not come within 0.5 meters of the ground. This is given by the following barrier function
 \begin{align}
     h(\X) = \left (\sum_{n=0}^5 {^I\T_n}{^n_n\r_{n+1}} \right) \cdot \begin{bmatrix} 0 & 0 & 1\end{bmatrix} - 0.5
 \end{align}
@@ -259,7 +251,7 @@ In the first simulation, the begins in a raised positions, with all links positi
     \label{fig:7dofbarriervalue2}
 \end{figure}
 
-\noindent It is clear that in the best effort controller the saftey set is breached. The CBF controller on the other hand maintains a safe configuration throughout. Figures \ref{fig:7dofnocbf2} and \ref{fig:7dofcbf2} show a model of this simulation both with and without CBF enforcement. The circle marks the 0.5m safety margin about the end effector desired by our barrier.
+\noindent It is clear that in the best effort controller the safety set is breached. The CBF controller on the other hand maintains a safe configuration throughout. Figures \ref{fig:7dofnocbf2} and \ref{fig:7dofcbf2} show a model of this simulation both with and without CBF enforcement. The circle marks the 0.5m safety margin about the end effector desired by our barrier.
 
 \begin{figure}[H]
     \centering
@@ -277,5 +269,26 @@ In the first simulation, the begins in a raised positions, with all links positi
     \includegraphics[width=0.3\textwidth]{Figures/Examples/7DOF/Frame300CBF.png}
     \caption{7-DOF Manipulator with CBF}
     \label{fig:7dofcbf2}
-\section{Results}
 \end{figure}
+
+\section{Results}
+Table \ref{tab:perf} highlights the performance of a CBF controller using both the numerical (N) and symbolic (S) approaches. In the symbolic approaches, closed-form solutions for the equations of motion are generated using Matlab's symbolic toolbox. The program size column contains the approximate number of lines in the controller design. This metric is only meant to include the unique code an individual designing a control system would need to write, and thus does not include backend libraries. For numerical program size, this measure is the number of lines in the setup file using the author's Python implementation of the \algname{} procedure. The exact code for these examples can be found in the appendix. For symbolic program size, this measure is the size of the function generated from the symbolic equations of motion.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{||c c c c c||} 
+ \hline
+ DOF & Speed (N, Hz) & Speed (S, Hz) & Size (N, loc) & Size (S, loc)\\ [0.5ex] 
+ \hline\hline
+ 3 & 370 & 2069 & 53  & 40\\ 
+ \hline
+ 4 & 278 & 2204 & 33   & 10 \\
+ \hline
+ 7 & 128 & 45 & 139   & ~80k \\
+ \hline
+\end{tabular}
+\caption{Performance Comparison }
+\label{tab:perf}
+\end{table}
+
+From Table \ref{tab:perf} it is clear that the numerical solution is inferior to symbolic in certain cases. Specifically, it is outperformed in systems that have few degrees of freedom, and few rotations that do not occur about a center of mass. In these cases, the equations of motion are concise enough that symbolic code generation tools can optimize away a greater portion of the program. This is not the case for the seven DOF robotic arm, a high degree of freedom system with all joints being rotated around points other than their center of mass. In cases such as this, a performance gain of 3x is seen when comparing the numerical solver to symbolic code generation. Additionally, a reduction in program size by 575x is seen, giving an ideal case for numerical solvers.
